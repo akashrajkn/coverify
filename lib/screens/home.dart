@@ -15,8 +15,18 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
-  String currentLocation = 'Dehradun';
-  var locationList       = ['', 'Ahmedabad', 'Bangalore', 'Chennai', 'Dehradun', 'Ghaziabad', 'Hyderabad', 'NCR', 'Mumbai'];
+  String currentLocation;
+  var locationList = [];
+
+  @override
+  void initState() {
+
+    setState(() {
+      currentLocation = 'Dehradun';
+      locationList    = ['', 'Ahmedabad', 'Bangalore', 'Chennai', 'Dehradun', 'Ghaziabad', 'Hyderabad', 'NCR', 'Mumbai'];
+    });
+    super.initState();
+  }
 
   void locationChanged(String newLocation) {
     setState(() {
@@ -28,10 +38,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar : appBarCommon(currentLocation, () { showLocationBottomSheet(context, locationList, locationChanged); }),
-      body   : Center(
+      body   : SingleChildScrollView(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             contactCardWidget(
               'The Enchanted Forest',
@@ -42,6 +53,76 @@ class _HomeScreenState extends State<HomeScreen> {
               3,
               0,
               'not_working'
+            ),
+            contactCardWidget(
+              'The Enchanted Forest',
+              '+91 12345 67890',
+              '1974-03-20 00:00:00.000',
+              12456,
+              3,
+              3,
+              0,
+              'helpful'
+            ),
+            contactCardWidget(
+              'The Enchanted Forest',
+              '+91 12345 67890',
+              '1974-03-20 00:00:00.000',
+              12456,
+              3,
+              3,
+              0,
+              'unresponsive'
+            ),
+            contactCardWidget(
+              'The Enchanted Forest',
+              '+91 12345 67890',
+              '1974-03-20 00:00:00.000',
+              12456,
+              3,
+              3,
+              0,
+              'out_of_stock'
+            ),
+            contactCardWidget(
+                'The Enchanted Forest',
+                '+91 12345 67890',
+                '1974-03-20 00:00:00.000',
+                12456,
+                3,
+                3,
+                0,
+                'not_working'
+            ),
+            contactCardWidget(
+                'The Enchanted Forest',
+                '+91 12345 67890',
+                '1974-03-20 00:00:00.000',
+                12456,
+                3,
+                3,
+                0,
+                'helpful'
+            ),
+            contactCardWidget(
+                'The Enchanted Forest',
+                '+91 12345 67890',
+                '1974-03-20 00:00:00.000',
+                12456,
+                3,
+                3,
+                0,
+                'unresponsive'
+            ),
+            contactCardWidget(
+                'The Enchanted Forest',
+                '+91 12345 67890',
+                '1974-03-20 00:00:00.000',
+                12456,
+                3,
+                3,
+                0,
+                'out_of_stock'
             ),
           ],
         ),

@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 String prettifyNumberForCard(int num) {
 
   if (num > 1000) {
-    int ks = (num / 1000).ceil();
+    int ks = (num / 1000).floor();
 
     return ks.toString() + 'k';
   }
