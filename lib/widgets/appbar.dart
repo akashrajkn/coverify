@@ -4,7 +4,7 @@ import 'package:coverify/constants.dart';
 import 'package:coverify/theme.dart';
 
 
-Widget appBarCommon(String location) {
+Widget appBarCommon(String location, Function callback) {
 
   return AppBar(
     elevation                 : 0,
@@ -47,7 +47,7 @@ Widget appBarCommon(String location) {
             ],
           )
         ),
-        onTap : () { },
+        onTap : () { callback(); },
       )
     ],
   );

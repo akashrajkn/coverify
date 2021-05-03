@@ -1,9 +1,10 @@
-import 'package:coverify/theme.dart';
-import 'package:coverify/widgets/appbar.dart';
-import 'package:coverify/widgets/contact_card.dart';
 import 'package:flutter/material.dart';
 
 import 'package:coverify/constants.dart';
+import 'package:coverify/theme.dart';
+import 'package:coverify/widgets/appbar.dart';
+import 'package:coverify/widgets/contact_card.dart';
+import 'package:coverify/widgets/location_sheet.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -14,11 +15,20 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
+  String currentLocation = 'Dehradun';
+  var locationList       = ['', 'Ahmedabad', 'Bangalore', 'Chennai', 'Dehradun', 'Ghaziabad', 'Hyderabad', 'NCR', 'Mumbai'];
+
+  void locationChanged(String newLocation) {
+    setState(() {
+      currentLocation = newLocation;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
-      appBar : appBarCommon('dehradun'),
+      appBar : appBarCommon(currentLocation, () { showLocationBottomSheet(context, locationList, locationChanged); }),
       body   : Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
