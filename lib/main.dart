@@ -1,49 +1,27 @@
-import 'package:coverify/theme.dart';
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(MyApp());
+import 'package:coverify/constants.dart';
+import 'package:coverify/router.dart' as router;
+import 'package:coverify/theme.dart';
+
+
+Future<void> main() async {
+
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(CoVerify());
 }
 
-class MyApp extends StatelessWidget {
+class CoVerify extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'CoVerify',
-      theme: ThemeData(
-        primarySwatch: primaryColorMaterial,
-      ),
-      home: MyHomePage(title: 'CoVerify'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-
-  @override
-  Widget build(BuildContext context) {
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[],
-        ),
-      ),
+      title           : 'CoVerify',
+      theme           : ThemeData(primarySwatch: primaryColorMaterial,),
+      initialRoute    : homeRoute,
+      onGenerateRoute : router.Router.generateRoute,
     );
   }
 }
