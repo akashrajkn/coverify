@@ -17,6 +17,7 @@ dependencies:
 
   flutter_phone_direct_caller: ^2.0.0
   phonecallstate: ^1.0.1
+  lazy_load_scrollview: ^1.3.0
 
 dev_dependencies:
   flutter_test:

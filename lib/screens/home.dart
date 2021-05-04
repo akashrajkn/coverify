@@ -1,10 +1,13 @@
+import 'package:coverify/models/contact_card.dart';
 import 'package:flutter/material.dart';
 
 import 'package:coverify/constants.dart';
+import 'package:coverify/dummy_data.dart';
 import 'package:coverify/theme.dart';
 import 'package:coverify/widgets/appbar.dart';
 import 'package:coverify/widgets/contact_card.dart';
 import 'package:coverify/widgets/location_sheet.dart';
+import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -15,17 +18,28 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
-  String currentLocation;
-  var locationList = [];
-  String chosenFilter = '';
+  String currentLocation = '';
+  String chosenFilter    = '';
+  var locationList       = [];
+
+  var contactsList           = [];
+  bool isLoadingContactsList = true;
 
   @override
   void initState() {
 
+    // Get current location and location list
     setState(() {
       currentLocation = 'Dehradun';
       locationList    = ['', 'Ahmedabad', 'Bangalore', 'Chennai', 'Dehradun', 'Ghaziabad', 'Hyderabad', 'NCR', 'Mumbai'];
     });
+
+    // Get contacts list
+    setState(() {
+      isLoadingContactsList = false;
+      contactsList = contactsDummy;
+    });
+
     super.initState();
   }
 
@@ -39,6 +53,10 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       chosenFilter = newFilter;
     });
+  }
+
+  Future _loadMoreContacts() async {
+
   }
 
   @override
@@ -72,93 +90,19 @@ class _HomeScreenState extends State<HomeScreen> {
               )
           ),
           Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment : MainAxisAlignment.start,
+            child: LazyLoadScrollView(
+              isLoading       : isLoadingContactsList,
+              onEndOfPage     : () => _loadMoreContacts(),
+              child           : ListView.builder(
+                shrinkWrap  : true,
+                itemCount   : contactsList.length,
+                itemBuilder : (context, index) {
 
-                children          : <Widget>[
-                  contactCardWidget(
-                      'The Enchanted Forest',
-                      '+91 12345 67890',
-                      '1974-03-20 00:00:00.000',
-                      12456,
-                      3,
-                      3,
-                      0,
-                      'not_working'
-                  ),
-                  contactCardWidget(
-                      'The Enchanted Forest',
-                      '+91 12345 67890',
-                      '1974-03-20 00:00:00.000',
-                      12456,
-                      3,
-                      3,
-                      0,
-                      'helpful'
-                  ),
-                  contactCardWidget(
-                      'The Enchanted Forest',
-                      '+91 12345 67890',
-                      '1974-03-20 00:00:00.000',
-                      12456,
-                      3,
-                      3,
-                      0,
-                      'unresponsive'
-                  ),
-                  contactCardWidget(
-                      'The Enchanted Forest',
-                      '+91 12345 67890',
-                      '1974-03-20 00:00:00.000',
-                      12456,
-                      3,
-                      3,
-                      0,
-                      'out_of_stock'
-                  ),
-                  contactCardWidget(
-                      'The Enchanted Forest',
-                      '+91 12345 67890',
-                      '1974-03-20 00:00:00.000',
-                      12456,
-                      3,
-                      3,
-                      0,
-                      'not_working'
-                  ),
-                  contactCardWidget(
-                      'The Enchanted Forest',
-                      '+91 12345 67890',
-                      '1974-03-20 00:00:00.000',
-                      12456,
-                      3,
-                      3,
-                      0,
-                      'helpful'
-                  ),
-                  contactCardWidget(
-                      'The Enchanted Forest',
-                      '+91 12345 67890',
-                      '1974-03-20 00:00:00.000',
-                      12456,
-                      3,
-                      3,
-                      0,
-                      'unresponsive'
-                  ),
-                  contactCardWidget(
-                      'The Enchanted Forest',
-                      '+91 12345 67890',
-                      '1974-03-20 00:00:00.000',
-                      12456,
-                      3,
-                      3,
-                      0,
-                      'out_of_stock'
-                  ),
-                ],
-              ),
+                  return contactCardWidget(
+                    contactsList[index]
+                  );
+                },
+              )
             ),
           ),
         ],

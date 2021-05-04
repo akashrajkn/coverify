@@ -1,24 +1,16 @@
 import 'package:flutter/material.dart';
 
+import 'package:coverify/models/contact_card.dart';
 import 'package:coverify/utils/pretty.dart';
 
 
-Widget contactCardWidget(
-    String name,
-    String contactNumber,
-    String lastActivity,
-    int    helpfulCount,
-    int    unresponsiveCount,
-    int    outOfStockCount,
-    int    notWorkingCount,
-    String state
-  ) {
+Widget contactCardWidget(ContactCardModel model) {
 
-  String title    = name;
-  String subtitle = contactNumber;
+  String title    = model.name;
+  String subtitle = model.contactNumber;
 
   if (title.isEmpty) {
-    title    = contactNumber;
+    title    = subtitle;
     subtitle = '';
   }
 
@@ -26,7 +18,7 @@ Widget contactCardWidget(
   String      stateText  = '';
   Color       stateTextColor;
 
-  switch (state) {
+  switch (model.state) {
     case 'helpful':
       colorsList[0]  = Colors.green;
       stateText      = 'helpful';
@@ -62,7 +54,7 @@ Widget contactCardWidget(
         ListTile(
           title    : Text(title, overflow: TextOverflow.ellipsis,),
           subtitle : Text(subtitle),
-          trailing : Text(prettifyTimeForCard(lastActivity), style: TextStyle(color: Colors.grey),),
+          trailing : Text(prettifyTimeForCard(model.lastActivity), style: TextStyle(color: Colors.grey),),
         ),
         Row(
           mainAxisAlignment : MainAxisAlignment.start,
@@ -71,19 +63,19 @@ Widget contactCardWidget(
             SizedBox(width: 17,),
             Icon(Icons.thumb_up, size: 20, color: colorsList[0]),
             SizedBox(width: 3,),
-            Text(prettifyNumberForCard(helpfulCount), style: TextStyle(color: colorsList[0]),),
+            Text(prettifyNumberForCard(model.helpfulCount), style: TextStyle(color: colorsList[0]),),
             SizedBox(width: 15,),
             Icon(Icons.phone_missed, size: 20, color: colorsList[1],),
             SizedBox(width: 3,),
-            Text(prettifyNumberForCard(unresponsiveCount), style: TextStyle(color: colorsList[1]),),
+            Text(prettifyNumberForCard(model.unresponsiveCount), style: TextStyle(color: colorsList[1]),),
             SizedBox(width: 15,),
             Icon(Icons.shopping_cart_outlined, size: 20, color: colorsList[2]),
             SizedBox(width: 3,),
-            Text(prettifyNumberForCard(outOfStockCount), style: TextStyle(color: colorsList[2]),),
+            Text(prettifyNumberForCard(model.outOfStockCount), style: TextStyle(color: colorsList[2]),),
             SizedBox(width: 15,),
             Icon(Icons.block, size: 20, color: colorsList[3],),
             SizedBox(width: 3,),
-            Text(prettifyNumberForCard(notWorkingCount), style: TextStyle(color: colorsList[3]),),
+            Text(prettifyNumberForCard(model.notWorkingCount), style: TextStyle(color: colorsList[3]),),
             Spacer(),
             Container(
               padding : EdgeInsets.fromLTRB(0, 0, 20, 0),
