@@ -17,6 +17,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   String currentLocation;
   var locationList = [];
+  String chosenFilter = '';
 
   @override
   void initState() {
@@ -34,6 +35,12 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void filterChanged(String newFilter) {
+    setState(() {
+      chosenFilter = newFilter;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -42,8 +49,30 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar : appBarCommon(currentLocation, () { showLocationBottomSheet(context, locationList, locationChanged); }),
       body   : SingleChildScrollView(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
+          mainAxisAlignment : MainAxisAlignment.start,
+
+          children          : <Widget>[
+            Text('Each contact is updated with the most recent status'),
+            SizedBox(height: 20,),
+            SingleChildScrollView(
+              scrollDirection : Axis.horizontal,
+              child           : Row(
+                crossAxisAlignment : CrossAxisAlignment.center,
+                mainAxisAlignment  : MainAxisAlignment.start,
+                children: [
+                  SizedBox(width: 20,),
+                  OutlinedButton(onPressed: (){ filterChanged('oxygen'); },     child: Text('oxygen', style: TextStyle(fontWeight: chosenFilter == 'oxygen' ? FontWeight.bold : FontWeight.normal),)),
+                  SizedBox(width: 10,),
+                  OutlinedButton(onPressed: (){ filterChanged('bed'); },        child: Text('bed', style: TextStyle(fontWeight: chosenFilter == 'bed' ? FontWeight.bold : FontWeight.normal),)),
+                  SizedBox(width: 10,),
+                  OutlinedButton(onPressed: (){ filterChanged('injections'); }, child: Text('injections & medicines', style: TextStyle(fontWeight: chosenFilter == 'injections' ? FontWeight.bold : FontWeight.normal),)),
+                  SizedBox(width: 10,),
+                  OutlinedButton(onPressed: (){ filterChanged('plasma'); },     child: Text('plasma', style: TextStyle(fontWeight: chosenFilter == 'plasma' ? FontWeight.bold : FontWeight.normal),)),
+                  SizedBox(width: 20,),
+                ],
+              )
+            ),
+
             contactCardWidget(
               'The Enchanted Forest',
               '+91 12345 67890',

@@ -15,6 +15,9 @@ dependencies:
   cupertino_icons: ^1.0.2
   intl:
 
+  flutter_phone_direct_caller: ^2.0.0
+  phonecallstate: ^1.0.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
