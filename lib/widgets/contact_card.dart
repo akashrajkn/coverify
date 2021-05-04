@@ -78,7 +78,7 @@ Widget contactCardWidget(ContactCardModel model) {
             Text(prettifyNumberForCard(model.notWorkingCount), style: TextStyle(color: colorsList[3]),),
             Spacer(),
             Container(
-              padding : EdgeInsets.fromLTRB(0, 0, 20, 0),
+              padding : EdgeInsets.fromLTRB(0, 0, 16, 0),
               child   : Text(stateText, style: TextStyle(color: stateTextColor),),
             )
           ],

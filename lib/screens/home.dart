@@ -50,6 +50,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void filterChanged(String newFilter) {
+
+    if (newFilter == chosenFilter) {
+      newFilter = '';
+    }
+
     setState(() {
       chosenFilter = newFilter;
     });
@@ -97,10 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 shrinkWrap  : true,
                 itemCount   : contactsList.length,
                 itemBuilder : (context, index) {
-
-                  return contactCardWidget(
-                    contactsList[index]
-                  );
+                  return contactCardWidget(contactsList[index]);
                 },
               )
             ),
