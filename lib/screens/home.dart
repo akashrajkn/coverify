@@ -99,6 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
               isLoading       : isLoadingContactsList,
               onEndOfPage     : () => _loadMoreContacts(),
               child           : ListView.builder(
+                padding     : EdgeInsets.all(10),
                 shrinkWrap  : true,
                 itemCount   : contactsList.length,
                 itemBuilder : (context, index) {
