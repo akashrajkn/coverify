@@ -4,7 +4,11 @@ import 'package:coverify/models/contact_card.dart';
 import 'package:coverify/utils/pretty.dart';
 
 
-Widget contactCardWidget(ContactCardModel model, Function callback) {
+Widget contactCardWidget(ContactCardModel model, Function callback, String filter) {
+
+  if (filter.isNotEmpty && !model.type.contains(filter)) {
+    return Container();
+  }
 
   String title    = model.name;
   String subtitle = model.contactNumber;

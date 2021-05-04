@@ -123,7 +123,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 shrinkWrap  : true,
                 itemCount   : contactsList.length,
                 itemBuilder : (context, index) {
-                  return contactCardWidget(contactsList[index], callNumberAndSaveFeedback);
+                  return contactCardWidget(contactsList[index], callNumberAndSaveFeedback, chosenFilter);
                 },
               )
             ),
