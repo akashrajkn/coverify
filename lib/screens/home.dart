@@ -47,14 +47,13 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar : appBarCommon(currentLocation, () { showLocationBottomSheet(context, locationList, locationChanged); }),
-      body   : SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment : MainAxisAlignment.start,
+      body   : Column(
+        mainAxisAlignment : MainAxisAlignment.start,
 
-          children          : <Widget>[
-            Text('Each contact is updated with the most recent status'),
-            SizedBox(height: 20,),
-            SingleChildScrollView(
+        children          : <Widget>[
+          Text('Each contact is updated with the most recent status'),
+          SizedBox(height: 20,),
+          SingleChildScrollView(
               scrollDirection : Axis.horizontal,
               child           : Row(
                 crossAxisAlignment : CrossAxisAlignment.center,
@@ -71,90 +70,98 @@ class _HomeScreenState extends State<HomeScreen> {
                   SizedBox(width: 20,),
                 ],
               )
-            ),
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment : MainAxisAlignment.start,
 
-            contactCardWidget(
-              'The Enchanted Forest',
-              '+91 12345 67890',
-              '1974-03-20 00:00:00.000',
-              12456,
-              3,
-              3,
-              0,
-              'not_working'
+                children          : <Widget>[
+                  contactCardWidget(
+                      'The Enchanted Forest',
+                      '+91 12345 67890',
+                      '1974-03-20 00:00:00.000',
+                      12456,
+                      3,
+                      3,
+                      0,
+                      'not_working'
+                  ),
+                  contactCardWidget(
+                      'The Enchanted Forest',
+                      '+91 12345 67890',
+                      '1974-03-20 00:00:00.000',
+                      12456,
+                      3,
+                      3,
+                      0,
+                      'helpful'
+                  ),
+                  contactCardWidget(
+                      'The Enchanted Forest',
+                      '+91 12345 67890',
+                      '1974-03-20 00:00:00.000',
+                      12456,
+                      3,
+                      3,
+                      0,
+                      'unresponsive'
+                  ),
+                  contactCardWidget(
+                      'The Enchanted Forest',
+                      '+91 12345 67890',
+                      '1974-03-20 00:00:00.000',
+                      12456,
+                      3,
+                      3,
+                      0,
+                      'out_of_stock'
+                  ),
+                  contactCardWidget(
+                      'The Enchanted Forest',
+                      '+91 12345 67890',
+                      '1974-03-20 00:00:00.000',
+                      12456,
+                      3,
+                      3,
+                      0,
+                      'not_working'
+                  ),
+                  contactCardWidget(
+                      'The Enchanted Forest',
+                      '+91 12345 67890',
+                      '1974-03-20 00:00:00.000',
+                      12456,
+                      3,
+                      3,
+                      0,
+                      'helpful'
+                  ),
+                  contactCardWidget(
+                      'The Enchanted Forest',
+                      '+91 12345 67890',
+                      '1974-03-20 00:00:00.000',
+                      12456,
+                      3,
+                      3,
+                      0,
+                      'unresponsive'
+                  ),
+                  contactCardWidget(
+                      'The Enchanted Forest',
+                      '+91 12345 67890',
+                      '1974-03-20 00:00:00.000',
+                      12456,
+                      3,
+                      3,
+                      0,
+                      'out_of_stock'
+                  ),
+                ],
+              ),
             ),
-            contactCardWidget(
-              'The Enchanted Forest',
-              '+91 12345 67890',
-              '1974-03-20 00:00:00.000',
-              12456,
-              3,
-              3,
-              0,
-              'helpful'
-            ),
-            contactCardWidget(
-              'The Enchanted Forest',
-              '+91 12345 67890',
-              '1974-03-20 00:00:00.000',
-              12456,
-              3,
-              3,
-              0,
-              'unresponsive'
-            ),
-            contactCardWidget(
-              'The Enchanted Forest',
-              '+91 12345 67890',
-              '1974-03-20 00:00:00.000',
-              12456,
-              3,
-              3,
-              0,
-              'out_of_stock'
-            ),
-            contactCardWidget(
-                'The Enchanted Forest',
-                '+91 12345 67890',
-                '1974-03-20 00:00:00.000',
-                12456,
-                3,
-                3,
-                0,
-                'not_working'
-            ),
-            contactCardWidget(
-                'The Enchanted Forest',
-                '+91 12345 67890',
-                '1974-03-20 00:00:00.000',
-                12456,
-                3,
-                3,
-                0,
-                'helpful'
-            ),
-            contactCardWidget(
-                'The Enchanted Forest',
-                '+91 12345 67890',
-                '1974-03-20 00:00:00.000',
-                12456,
-                3,
-                3,
-                0,
-                'unresponsive'
-            ),
-            contactCardWidget(
-                'The Enchanted Forest',
-                '+91 12345 67890',
-                '1974-03-20 00:00:00.000',
-                12456,
-                3,
-                3,
-                0,
-                'out_of_stock'
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         type  : BottomNavigationBarType.fixed,
