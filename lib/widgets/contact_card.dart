@@ -4,7 +4,7 @@ import 'package:coverify/models/contact_card.dart';
 import 'package:coverify/utils/pretty.dart';
 
 
-Widget contactCardWidget(ContactCardModel model) {
+Widget contactCardWidget(ContactCardModel model, Function callback) {
 
   String title    = model.name;
   String subtitle = model.contactNumber;
@@ -48,7 +48,7 @@ Widget contactCardWidget(ContactCardModel model) {
     elevation : 0,
 
     child     : InkWell(
-      onTap : () {},
+      onTap : () { callback(model.contactNumber); },
 
       child : Column(
         mainAxisSize : MainAxisSize.min,
