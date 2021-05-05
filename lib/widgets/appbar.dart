@@ -4,7 +4,7 @@ import 'package:coverify/constants.dart';
 import 'package:coverify/theme.dart';
 
 
-Widget appBarCommon(String location, Function callback) {
+Widget appBarCommon(String location, Function callback, bool showLocation) {
 
   return AppBar(
     elevation                 : 0,
@@ -28,7 +28,7 @@ Widget appBarCommon(String location, Function callback) {
       ],
     ),
     actions: [
-      InkWell(
+      !showLocation ? Container() : InkWell(
 
         child : Padding(
           padding : EdgeInsets.fromLTRB(10, 0, 25, 0),
@@ -48,7 +48,7 @@ Widget appBarCommon(String location, Function callback) {
           )
         ),
         onTap : () { callback(); },
-      )
+      ),
     ],
   );
 }
