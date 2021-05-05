@@ -7,6 +7,7 @@ import 'package:coverify/theme.dart';
 
 import 'package:coverify/screens/browse_page.dart';
 import 'package:coverify/screens/dialer_page.dart';
+import 'package:coverify/utils/misc.dart';
 import 'package:coverify/widgets/appbar.dart';
 import 'package:coverify/widgets/location_sheet.dart';
 
@@ -30,6 +31,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
+
+    isInternetAvailable().then((available) {
+      if (!available) {
+        Navigator.of(context).pushNamed(errorRoute, arguments: 'Internet not available');
+      }
+    });
 
     // TODO: Get current location and location list
     setState(() {

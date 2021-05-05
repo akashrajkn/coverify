@@ -8,10 +8,15 @@ import 'package:coverify/theme.dart';
 Future<void> main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(CoVerify());
+
+  var infoStartup = { };
+  runApp(CoVerify(infoStartup));
 }
 
 class CoVerify extends StatelessWidget {
+
+  final infoStartup;
+  CoVerify(this.infoStartup);
 
   @override
   Widget build(BuildContext context) {
