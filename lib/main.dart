@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:coverify/constants.dart';
 import 'package:coverify/router.dart' as router;
 import 'package:coverify/theme.dart';
+import 'package:coverify/utils/db.dart';
 
 
 Future<void> main() async {

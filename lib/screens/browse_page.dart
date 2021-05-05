@@ -13,14 +13,14 @@ import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 class BrowsePage extends StatefulWidget {
 
   final String location;
-  BrowsePage({this.location});
+  BrowsePage({Key key, this.location}) : super(key: key);
 
   @override
-  _BrowsePageState createState() => _BrowsePageState();
+  BrowsePageState createState() => BrowsePageState();
 }
 
 
-class _BrowsePageState extends State<BrowsePage> {
+class BrowsePageState extends State<BrowsePage> {
 
   String currentLocation = '';
   String chosenFilter    = '';
@@ -32,17 +32,26 @@ class _BrowsePageState extends State<BrowsePage> {
 
   @override
   void initState() {
-
-    // Get contacts list
-    setState(() {
-      currentLocation       = widget.location;
-      isLoadingContactsList = false;
-      contactsList          = contactsDummy;
-    });
-
-    print('Location updated, fetch contacts for ' + currentLocation);
+    getContactsForLocation(widget.location);
 
     super.initState();
+  }
+
+  Future<void> getContactsForLocation(String location) async {
+
+    // TODO: Fetch from database
+    await Future.delayed(Duration(seconds: 2));
+
+    setState(() {
+      isLoadingContactsList = false;
+      contactsList          = contactsDummy;
+      currentLocation       = location;
+    });
+  }
+
+  void locationUpdated(String newLocation) {
+
+    getContactsForLocation(newLocation);
   }
 
   void filterChanged(String newFilter) {
@@ -57,7 +66,7 @@ class _BrowsePageState extends State<BrowsePage> {
   }
 
   Future refreshContacts() async {
-    await Future.delayed(Duration(seconds: 2));
+    getContactsForLocation(currentLocation);
   }
 
   Future _loadMoreContacts() async {

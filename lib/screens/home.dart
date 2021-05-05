@@ -24,8 +24,9 @@ class _HomeScreenState extends State<HomeScreen> {
   BrowsePage browsePage;
   Dialer     dialerPage;
   RecentPage recentPage;
-  int currentNavigationIndex      = 0;
+  int currentNavigationIndex      = -1;
   List<Widget> navigationChildren = [];
+  GlobalKey<BrowsePageState> browsePageKey = GlobalKey();
 
   String currentLocation          = '';
   var locationList                = [];
@@ -43,14 +44,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
     getLocationsFromDB()
     .then((_) {
-      setHomeLocation();
+      setHomeLocation().then((_) {
+        browsePage         = BrowsePage(key: browsePageKey, location: currentLocation,);
+        dialerPage         = Dialer();
+        recentPage         = RecentPage();
+        navigationChildren = [browsePage, dialerPage, recentPage];
+        currentNavigationIndex = 0;
+      });
+    })
+    .onError((error, stackTrace) {
+      Navigator.of(context).pushNamed(errorRoute, arguments: error.toString());
     });
-
-
-    browsePage         = BrowsePage(location: currentLocation,);
-    dialerPage         = Dialer();
-    recentPage         = RecentPage();
-    navigationChildren = [browsePage, dialerPage, recentPage];
 
     super.initState();
   }
@@ -82,20 +86,19 @@ class _HomeScreenState extends State<HomeScreen> {
     prefs = await SharedPreferences.getInstance();
     prefs.setString('location', newLocation);
 
-    setState(() {
-      currentLocation = newLocation;
-    });
+    setState(() { currentLocation = newLocation; });
+
+    browsePageKey.currentState.locationUpdated(newLocation);
   }
 
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar : appBarCommon(currentLocation, () { showLocationBottomSheet(context, locationList, locationChanged); }, currentNavigationIndex == 0),
-      body   : navigationChildren[currentNavigationIndex],
-
-      bottomNavigationBar: BottomNavigationBar(
+      backgroundColor    : Colors.white,
+      appBar             : appBarCommon(currentLocation, () { showLocationBottomSheet(context, locationList, locationChanged); }, currentNavigationIndex == 0),
+      body               : currentNavigationIndex == -1 ? Container() : navigationChildren[currentNavigationIndex],
+      bottomNavigationBar: currentNavigationIndex == -1 ? null : BottomNavigationBar(
         type         : BottomNavigationBarType.fixed,
         currentIndex : currentNavigationIndex,
         items        : [
