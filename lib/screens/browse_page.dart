@@ -56,6 +56,10 @@ class _BrowsePageState extends State<BrowsePage> {
     });
   }
 
+  Future refreshContacts() async {
+    await Future.delayed(Duration(seconds: 2));
+  }
+
   Future _loadMoreContacts() async {
 
   }
@@ -120,13 +124,18 @@ class _BrowsePageState extends State<BrowsePage> {
           child: LazyLoadScrollView(
             isLoading       : isLoadingContactsList,
             onEndOfPage     : () => _loadMoreContacts(),
-            child           : ListView.builder(
-              padding     : EdgeInsets.all(10),
-              shrinkWrap  : true,
-              itemCount   : contactsList.length,
-              itemBuilder : (context, index) {
-                return contactCardWidget(contactsList[index], callNumberAndSaveFeedback, chosenFilter);
-              },
+            child           : RefreshIndicator(
+              onRefresh       : refreshContacts,
+              backgroundColor : primaryColor,
+              color           : Colors.white,
+              child           : ListView.builder(
+                padding     : EdgeInsets.all(10),
+                shrinkWrap  : true,
+                itemCount   : contactsList.length,
+                itemBuilder : (context, index) {
+                  return contactCardWidget(contactsList[index], callNumberAndSaveFeedback, chosenFilter);
+                },
+              ),
             )
           ),
         ),
