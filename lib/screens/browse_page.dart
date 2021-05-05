@@ -67,9 +67,24 @@ class _BrowsePageState extends State<BrowsePage> {
     final diff = await callHelper.callAndGetDuration(formattedPhoneNumber);
     showFeedbackBottomSheet(
         context,
-            (feedback) {
+          (feedback) {
           // TODO: Update database
           print(feedback);
+
+          final snackBar = SnackBar(
+            backgroundColor : feedbackColors[feedback],
+            content         : Row(
+              mainAxisAlignment  : MainAxisAlignment.center,
+              crossAxisAlignment : CrossAxisAlignment.center,
+
+              children: [
+                Icon(feedbackIconData[feedback], color: Colors.white, size: 20,),
+                SizedBox(width: 5,),
+                Text('Number marked as: $feedback', style: TextStyle(color: Colors.white),)
+              ],
+            ),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
         }
     );
   }

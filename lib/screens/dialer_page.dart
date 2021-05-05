@@ -48,6 +48,21 @@ class _DialerState extends State<Dialer> {
           (category) {
             // TODO: Update database
             print(category);
+
+            final snackBar = SnackBar(
+              backgroundColor : Colors.green,
+              content         : Row(
+                mainAxisAlignment  : MainAxisAlignment.center,
+                crossAxisAlignment : CrossAxisAlignment.center,
+
+                children: [
+                  Icon(Icons.check_circle, color: Colors.white, size: 20,),
+                  SizedBox(width: 5,),
+                  Text('Contact added', style: TextStyle(color: Colors.white),)
+                ],
+              ),
+            );
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
           }
         );
       }

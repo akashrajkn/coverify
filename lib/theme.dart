@@ -18,3 +18,20 @@ const MaterialColor primaryColorMaterial = const MaterialColor(
 );
 
 
+// Feedback () constants
+Map<String, Color> feedbackColors = {
+  'helpful'      : Colors.green,
+  'unresponsive' : Colors.red,
+  'out_of_stock' : Colors.orange,
+  'invalid'      : Colors.black,
+};
+
+Map<String, IconData> feedbackIconData = {
+  'helpful'      : Icons.thumb_up,
+  'unresponsive' : Icons.phone_missed,
+  'out_of_stock' : Icons.shopping_cart_outlined,
+  'invalid'      : Icons.block,
+};
+
+
+
