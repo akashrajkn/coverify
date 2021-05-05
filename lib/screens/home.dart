@@ -1,12 +1,13 @@
-import 'package:coverify/screens/recent_page.dart';
 import 'package:flutter/material.dart';
 
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:coverify/constants.dart';
-import 'package:coverify/dummy_data.dart';
 import 'package:coverify/theme.dart';
 
 import 'package:coverify/screens/browse_page.dart';
 import 'package:coverify/screens/dialer_page.dart';
+import 'package:coverify/screens/recent_page.dart';
 import 'package:coverify/utils/misc.dart';
 import 'package:coverify/widgets/appbar.dart';
 import 'package:coverify/widgets/location_sheet.dart';
@@ -29,6 +30,8 @@ class _HomeScreenState extends State<HomeScreen> {
   String currentLocation          = '';
   var locationList                = [];
 
+  SharedPreferences prefs;
+
   @override
   void initState() {
 
@@ -38,11 +41,11 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     });
 
-    // TODO: Get current location and location list
-    setState(() {
-      currentLocation  = 'Dehradun';
-      locationList     = ['', 'Ahmedabad', 'Bangalore', 'Chennai', 'Dehradun', 'Ghaziabad', 'Hyderabad', 'NCR', 'Mumbai'];
+    getLocationsFromDB()
+    .then((_) {
+      setHomeLocation();
     });
+
 
     browsePage         = BrowsePage(location: currentLocation,);
     dialerPage         = Dialer();
@@ -52,7 +55,33 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
   }
 
-  void locationChanged(String newLocation) {
+  Future<void> getLocationsFromDB() async {
+    Future.delayed(Duration(seconds: 1));
+
+    // TODO: Get current location and location list
+    setState(() {
+      locationList     = ['', 'Ahmedabad', 'Bangalore', 'Chennai', 'Dehradun', 'Ghaziabad', 'Hyderabad', 'NCR', 'Mumbai'];
+    });
+  }
+
+  Future<void> setHomeLocation() async {
+
+    prefs      = await SharedPreferences.getInstance();
+    String loc = prefs.getString('location') ?? '';
+
+    if (loc != '') {
+      setState(() { currentLocation = loc; });
+      return;
+    }
+
+    showLocationBottomSheet(context, locationList, locationChanged);
+  }
+
+  Future<void> locationChanged(String newLocation) async {
+
+    prefs = await SharedPreferences.getInstance();
+    prefs.setString('location', newLocation);
+
     setState(() {
       currentLocation = newLocation;
     });
