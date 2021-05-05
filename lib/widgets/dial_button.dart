@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:coverify/theme.dart';
 
 
-Widget dialButton(String number) {
+Widget dialButton(String number, Function callback) {
 
   return RawMaterialButton(
-    onPressed : () {},
+    onPressed : () { callback(number); },
     elevation : 2.0,
     fillColor : Colors.grey[100],
 
@@ -16,9 +16,9 @@ Widget dialButton(String number) {
   );
 }
 
-Widget callButton() {
+Widget callButton(Function callback) {
   return RawMaterialButton(
-      onPressed : () {},
+      onPressed : () { callback(); },
       elevation : 2.0,
       fillColor : Colors.green,
 
@@ -28,9 +28,9 @@ Widget callButton() {
   );
 }
 
-Widget backButton() {
+Widget backButton(Function callback) {
   return RawMaterialButton(
-      onPressed : () {},
+      onPressed : () { callback(); },
       elevation : 2.0,
       fillColor : Colors.grey[100],
 

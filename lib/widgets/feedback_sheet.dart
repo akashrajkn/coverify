@@ -30,32 +30,32 @@ void showFeedbackBottomSheet(BuildContext context, Function callback) {
                       leading : Icon(Icons.thumb_up, color: Colors.green,),
                       title   : Text('helpful', style: TextStyle(color: Colors.green),),
                       onTap   : () {
-                        callback('helpful');
                         Navigator.pop(context);
+                        callback('helpful');
                       },
                     ),
                     ListTile(
                       leading : Icon(Icons.phone_missed, color: Colors.red,),
                       title   : Text('unresponsive', style: TextStyle(color: Colors.red),),
                       onTap   : () {
-                        callback('unresponsive');
                         Navigator.pop(context);
+                        callback('unresponsive');
                       },
                     ),
                     ListTile(
                       leading : Icon(Icons.shopping_cart_outlined, color: Colors.orange,),
                       title   : Text('out of stock', style: TextStyle(color: Colors.orange),),
                       onTap   : () {
-                        callback('out_of_stock');
                         Navigator.pop(context);
+                        callback('out_of_stock');
                       },
                     ),
                     ListTile(
                       leading : Icon(Icons.block, color: Colors.black,),
                       title   : Text('invalid', style: TextStyle(color: Colors.black),),
                       onTap   : () {
-                        callback('not_working');
                         Navigator.pop(context);
+                        callback('not_working');
                       },
                     ),
                   ],

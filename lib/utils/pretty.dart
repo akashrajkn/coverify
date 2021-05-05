@@ -1,7 +1,5 @@
 import 'package:intl/intl.dart';
 
-/// Util functions
-
 
 String prettifyNumberForCard(int num) {
 
@@ -19,4 +17,15 @@ String prettifyTimeForCard(String formattedTime) {
   var dateTime = DateTime.parse(formattedTime);
 
   return DateFormat.jm().format(dateTime);
+}
+
+
+String displayDialledNumber(String dialledNumber) {
+
+  if (dialledNumber.length <= 5) {
+    return dialledNumber;
+  }
+
+  String formattedNumber = dialledNumber.substring(0, 5) + ' ' + dialledNumber.substring(5, dialledNumber.length);
+  return formattedNumber;
 }
