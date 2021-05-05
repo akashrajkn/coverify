@@ -4,6 +4,14 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 
+Future<dynamic> getCoverifyDatabase() async {
+  var databasePath = await getDatabasesPath();
+  String filePath  = join(databasePath, 'coverify.db');
+  var db           = await openDatabase(filePath);
+
+  return db;
+}
+
 Future<void> checkAndCreateDatabase() async {
 
   var databasePath = await getDatabasesPath();
@@ -33,4 +41,10 @@ Future<void> checkAndCreateDatabase() async {
   );
 
   await database.close();
+}
+
+
+Future<dynamic> fetchRecentCallsFromDatabase(Database db) async {
+
+  var records = await db.query('RecentCalls');
 }
