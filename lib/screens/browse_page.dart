@@ -25,10 +25,11 @@ class BrowsePageState extends State<BrowsePage> {
   String currentLocation = '';
   String chosenFilter    = '';
 
-  var contactsList           = [];
-  bool isLoadingContactsList = true;
+  var contactsList       = [];
+  bool isLoading         = true;
+  bool isLazyLoading     = true;
 
-  CallHelper callHelper = CallHelper();
+  CallHelper callHelper  = CallHelper();
 
   @override
   void initState() {
@@ -37,20 +38,26 @@ class BrowsePageState extends State<BrowsePage> {
     super.initState();
   }
 
+  @override
+  void setState(fn) {
+    if(mounted) {
+      super.setState(fn);
+    }
+  }
+
   Future<void> getContactsForLocation(String location) async {
 
+    setState(() { isLoading = true; });
     // TODO: Fetch from database
     await Future.delayed(Duration(seconds: 2));
-
     setState(() {
-      isLoadingContactsList = false;
+      isLoading             = false;
       contactsList          = contactsDummy;
       currentLocation       = location;
     });
   }
 
   void locationUpdated(String newLocation) {
-
     getContactsForLocation(newLocation);
   }
 
@@ -60,17 +67,18 @@ class BrowsePageState extends State<BrowsePage> {
       newFilter = '';
     }
 
-    setState(() {
-      chosenFilter = newFilter;
-    });
+    setState(() { chosenFilter = newFilter; });
   }
 
   Future refreshContacts() async {
-    getContactsForLocation(currentLocation);
+    await Future.delayed(Duration(seconds: 2));
+    setState(() { contactsList = contactsDummy; });
   }
 
   Future _loadMoreContacts() async {
-
+    setState(() { isLazyLoading = true; });
+    await Future.delayed(Duration(milliseconds: 500));
+    setState(() { isLazyLoading = false; });
   }
 
   Future<void> callNumberAndSaveFeedback(String formattedPhoneNumber) async {
@@ -129,9 +137,13 @@ class BrowsePageState extends State<BrowsePage> {
             ],
           ),
         ),
-        Expanded(
+        isLoading ? Container(
+          padding : EdgeInsets.fromLTRB(0, 20, 0, 0),
+          child   : CircularProgressIndicator(),
+        ) : Expanded(
+
           child: LazyLoadScrollView(
-            isLoading       : isLoadingContactsList,
+            isLoading       : isLazyLoading,
             onEndOfPage     : () => _loadMoreContacts(),
             child           : RefreshIndicator(
               onRefresh       : refreshContacts,

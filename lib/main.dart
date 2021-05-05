@@ -10,6 +10,8 @@ Future<void> main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
 
+  await checkAndCreateDatabase();
+
   var infoStartup = { };
   runApp(CoVerify(infoStartup));
 }
