@@ -74,60 +74,63 @@ class _DialerState extends State<Dialer> {
 
     return Center(
 
-      child: Column(
-        mainAxisAlignment  : MainAxisAlignment.center,
-        crossAxisAlignment : CrossAxisAlignment.center,
+      child: SingleChildScrollView(
 
-        children           : [
-          Container(
+        child: Column(
+          mainAxisAlignment  : MainAxisAlignment.center,
+          crossAxisAlignment : CrossAxisAlignment.center,
 
-            child: Text(displayDialledNumber(dialledNumber), style: TextStyle(fontSize: 30, color: primaryColor),),
-          ),
-          SizedBox(height: 50,),
-          Row(
-            mainAxisAlignment  : MainAxisAlignment.center,
-            crossAxisAlignment : CrossAxisAlignment.center,
+          children           : [
+            Container(
 
-            children           : [
-              dialButton('1', dialButtonTapped),
-              dialButton('2', dialButtonTapped),
-              dialButton('3', dialButtonTapped)
-            ],
-          ),
-          SizedBox(height: 25,),
-          Row(
-            mainAxisAlignment  : MainAxisAlignment.center,
-            crossAxisAlignment : CrossAxisAlignment.center,
+              child: Text(displayDialledNumber(dialledNumber), style: TextStyle(fontSize: 30, color: primaryColor),),
+            ),
+            SizedBox(height: 50,),
+            Row(
+              mainAxisAlignment  : MainAxisAlignment.center,
+              crossAxisAlignment : CrossAxisAlignment.center,
 
-            children           : [
-              dialButton('4', dialButtonTapped),
-              dialButton('5', dialButtonTapped),
-              dialButton('6', dialButtonTapped)
-            ],
-          ),
-          SizedBox(height: 25,),
-          Row(
-            mainAxisAlignment  : MainAxisAlignment.center,
-            crossAxisAlignment : CrossAxisAlignment.center,
+              children           : [
+                dialButton('1', dialButtonTapped),
+                dialButton('2', dialButtonTapped),
+                dialButton('3', dialButtonTapped)
+              ],
+            ),
+            SizedBox(height: 25,),
+            Row(
+              mainAxisAlignment  : MainAxisAlignment.center,
+              crossAxisAlignment : CrossAxisAlignment.center,
 
-            children           : [
-              dialButton('7', dialButtonTapped),
-              dialButton('8', dialButtonTapped),
-              dialButton('9', dialButtonTapped)
-            ],
-          ),
-          SizedBox(height: 25,),
-          Row(
-            mainAxisAlignment  : MainAxisAlignment.center,
-            crossAxisAlignment : CrossAxisAlignment.center,
+              children           : [
+                dialButton('4', dialButtonTapped),
+                dialButton('5', dialButtonTapped),
+                dialButton('6', dialButtonTapped)
+              ],
+            ),
+            SizedBox(height: 25,),
+            Row(
+              mainAxisAlignment  : MainAxisAlignment.center,
+              crossAxisAlignment : CrossAxisAlignment.center,
 
-            children           : [
-              dialButton('0', dialButtonTapped),
-              callButton(callButtonTapped),
-              backButton(backButtonTapped),
-            ],
-          ),
-        ],
+              children           : [
+                dialButton('7', dialButtonTapped),
+                dialButton('8', dialButtonTapped),
+                dialButton('9', dialButtonTapped)
+              ],
+            ),
+            SizedBox(height: 25,),
+            Row(
+              mainAxisAlignment  : MainAxisAlignment.center,
+              crossAxisAlignment : CrossAxisAlignment.center,
+
+              children           : [
+                dialButton('0', dialButtonTapped),
+                callButton(callButtonTapped),
+                backButton(backButtonTapped),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
