@@ -1,3 +1,5 @@
+import 'package:coverify/models/contact_card.dart';
+import 'package:coverify/utils/db.dart';
 import 'package:flutter/material.dart';
 
 import 'package:coverify/constants.dart';
@@ -49,7 +51,7 @@ class BrowsePageState extends State<BrowsePage> {
 
     setState(() { isLoading = true; });
     // TODO: Fetch from database
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(Duration(seconds: 1));
     setState(() {
       isLoading             = false;
       contactsList          = contactsDummy;
@@ -81,32 +83,35 @@ class BrowsePageState extends State<BrowsePage> {
     setState(() { isLazyLoading = false; });
   }
 
-  Future<void> callNumberAndSaveFeedback(String formattedPhoneNumber) async {
+  Future<void> callNumberAndSaveFeedback(ContactCardModel model) async {
 
-    print(formattedPhoneNumber);
+    print(model.contactNumber);
 
-    final diff = await callHelper.callAndGetDuration(formattedPhoneNumber);
+    final diff = await callHelper.callAndGetDuration(model.contactNumber);
     showFeedbackBottomSheet(
-        context,
-          (feedback) {
-          // TODO: Update database
-          print(feedback);
+      context,
+        (feedback) {
+        // TODO: Update online database
+        print(feedback);
 
-          final snackBar = SnackBar(
-            backgroundColor : feedbackColors[feedback],
-            content         : Row(
-              mainAxisAlignment  : MainAxisAlignment.center,
-              crossAxisAlignment : CrossAxisAlignment.center,
+        // TODO: Add record to local database
+        insertRecordToDatabase(null, model);
 
-              children: [
-                Icon(feedbackIconData[feedback], color: Colors.white, size: 20,),
-                SizedBox(width: 5,),
-                Text('Number marked as: $feedback', style: TextStyle(color: Colors.white),)
-              ],
-            ),
-          );
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        }
+        final snackBar = SnackBar(
+          backgroundColor : feedbackColors[feedback],
+          content         : Row(
+            mainAxisAlignment  : MainAxisAlignment.center,
+            crossAxisAlignment : CrossAxisAlignment.center,
+
+            children: [
+              Icon(feedbackIconData[feedback], color: Colors.white, size: 20,),
+              SizedBox(width: 5,),
+              Text('Number marked as: $feedback', style: TextStyle(color: Colors.white),)
+            ],
+          ),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
     );
   }
 

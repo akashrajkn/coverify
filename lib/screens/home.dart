@@ -88,7 +88,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
     setState(() { currentLocation = newLocation; });
 
-    browsePageKey.currentState.locationUpdated(newLocation);
+    if (browsePageKey.currentState != null) {
+      browsePageKey.currentState.locationUpdated(newLocation);
+    }
   }
 
   @override

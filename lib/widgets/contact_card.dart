@@ -52,7 +52,7 @@ Widget contactCardWidget(ContactCardModel model, Function callback, String filte
     elevation : 0,
 
     child     : InkWell(
-      onTap : () { callback(model.contactNumber); },
+      onTap : () { callback(model); },
 
       child : Column(
         mainAxisSize : MainAxisSize.min,
