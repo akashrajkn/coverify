@@ -1,5 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.akashrajkn.coverify">
+
+   <uses-permission android:name="android.permission.INTERNET" />
    <application
         android:label="Coverify"
         android:icon="@mipmap/launcher_icon">
