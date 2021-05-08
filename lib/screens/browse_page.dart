@@ -1,21 +1,25 @@
-import 'package:coverify/models/contact_card.dart';
-import 'package:coverify/utils/db.dart';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+
+import 'package:http/http.dart' as http;
+import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 
 import 'package:coverify/constants.dart';
 import 'package:coverify/dummy_data.dart';
 import 'package:coverify/theme.dart';
+import 'package:coverify/models/contact_card.dart';
 import 'package:coverify/utils/call_helper.dart';
+import 'package:coverify/utils/db.dart';
 import 'package:coverify/widgets/contact_card.dart';
 import 'package:coverify/widgets/feedback_sheet.dart';
-
-import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 
 
 class BrowsePage extends StatefulWidget {
 
-  final String location;
-  BrowsePage({Key key, this.location}) : super(key: key);
+  final dynamic location;
+  final dynamic resources;
+  BrowsePage({Key key, this.location, this.resources}) : super(key: key);
 
   @override
   BrowsePageState createState() => BrowsePageState();
@@ -24,8 +28,10 @@ class BrowsePage extends StatefulWidget {
 
 class BrowsePageState extends State<BrowsePage> {
 
-  String currentLocation = '';
-  String chosenFilter    = '';
+  String currentLocation   = '';
+  String currentLocationID = '';
+  String chosenFilter      = '';
+  int    offset            = 0;
 
   var contactsList       = [];
   bool isLoading         = true;
@@ -35,6 +41,9 @@ class BrowsePageState extends State<BrowsePage> {
 
   @override
   void initState() {
+
+    chosenFilter = widget.resources[0]['id'].toString();
+
     getContactsForLocation(widget.location);
 
     super.initState();
@@ -47,19 +56,45 @@ class BrowsePageState extends State<BrowsePage> {
     }
   }
 
-  Future<void> getContactsForLocation(String location) async {
+  Future<void> getContactsForLocation(dynamic location) async {
 
     setState(() { isLoading = true; });
-    // TODO: Fetch from database
-    await Future.delayed(Duration(seconds: 1));
+
+    String locationID  = location['id'];
+    chosenFilter       = '3';
+
+    String getContactsURL = apiFilterContactsURL + '?location=$locationID&requirement=$chosenFilter&offset=$offset';
+    print(getContactsURL);
+
+    var response = await http.get(Uri.parse(getContactsURL));
+    final parsed = jsonDecode(response.body);
+
+    print(parsed);
+
+    var responseContacts = [];
+    for (int i = 0; i < parsed['data'].length; i++) {
+      responseContacts.add(ContactCardModel(
+          name              : parsed['data'][i]['name'],
+          contactNumber     : parsed['data'][i]['contactNumber'],
+          lastActivity      : '1974-03-20 00:00:00.000',
+          helpfulCount      : 1, //parsed['data'][i]['tags'][0]['totalWorkedCount'],
+          unresponsiveCount : 1, //parsed['data'][i]['tags'][0]['totalUnresponsiveCount'],
+          outOfStockCount   : 0,
+          notWorkingCount   : 1, //parsed['data'][i]['tags'][0]['totalNotWorkedCount'],
+          state             : 'helpful',
+          type              : ['3']
+      ));
+    }
+
     setState(() {
       isLoading             = false;
-      contactsList          = contactsDummy;
-      currentLocation       = location;
+      contactsList          = responseContacts;
+      currentLocation       = location['name'];
+      currentLocationID     = location['id'];
     });
   }
 
-  void locationUpdated(String newLocation) {
+  void locationUpdated(dynamic newLocation) {
     getContactsForLocation(newLocation);
   }
 

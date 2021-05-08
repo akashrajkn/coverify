@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
+import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:coverify/constants.dart';
@@ -29,7 +32,9 @@ class _HomeScreenState extends State<HomeScreen> {
   GlobalKey<BrowsePageState> browsePageKey = GlobalKey();
 
   String currentLocation          = '';
+  String currentLocationID        = '';
   var locationList                = [];
+  var resourcesList               = [];
 
   SharedPreferences prefs;
 
@@ -45,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
     getLocationsFromDB()
     .then((_) {
       setHomeLocation().then((_) {
-        browsePage         = BrowsePage(key: browsePageKey, location: currentLocation,);
+        browsePage         = BrowsePage(key: browsePageKey, location: { 'name' : currentLocation, 'id': currentLocationID }, resources: resourcesList,);
         dialerPage         = Dialer();
         recentPage         = RecentPage();
         navigationChildren = [browsePage, dialerPage, recentPage];
@@ -60,33 +65,48 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> getLocationsFromDB() async {
-    Future.delayed(Duration(seconds: 1));
 
-    // TODO: Get current location and location list
+    var response = await http.get(Uri.parse(apiBootstrapURL));
+    final parsed = jsonDecode(response.body);
+
+    List<dynamic> tempLocations = parsed['locations'];
+    tempLocations.insert(0, { 'id' : '', 'name' : '' }); // FIXME: This is just for compatibility, get rid of it at a later point
+
     setState(() {
-      locationList     = ['', 'Ahmedabad', 'Bangalore', 'Chennai', 'Dehradun', 'Ghaziabad', 'Hyderabad', 'NCR', 'Mumbai'];
+      locationList  = tempLocations;
+      resourcesList = parsed['tags'];
     });
   }
 
   Future<void> setHomeLocation() async {
 
-    prefs      = await SharedPreferences.getInstance();
-    String loc = prefs.getString('location') ?? '';
+    prefs        = await SharedPreferences.getInstance();
+    String loc   = prefs.getString('location') ?? '';
+    String locID = prefs.getString('locationID') ?? '';
 
     if (loc != '') {
-      setState(() { currentLocation = loc; });
+      setState(() {
+        currentLocation   = loc;
+        currentLocationID = locID;
+      });
       return;
     }
 
     showLocationBottomSheet(context, locationList, locationChanged);
   }
 
-  Future<void> locationChanged(String newLocation) async {
+  Future<void> locationChanged(dynamic newLocation) async {
+
+    newLocation['id'] = newLocation['id'].toString();
 
     prefs = await SharedPreferences.getInstance();
-    prefs.setString('location', newLocation);
+    prefs.setString('location', newLocation['name']);
+    prefs.setString('locationID', newLocation['id']);
 
-    setState(() { currentLocation = newLocation; });
+    setState(() {
+      currentLocation   = newLocation['name'];
+      currentLocationID = newLocation['id'];
+    });
 
     if (browsePageKey.currentState != null) {
       browsePageKey.currentState.locationUpdated(newLocation);

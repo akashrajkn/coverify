@@ -29,9 +29,8 @@ void showLocationBottomSheet(BuildContext context, dynamic locationList, Functio
               }
 
               return ListTile(
-                title   : Text(locationList[index]),
+                title   : Text(locationList[index]['name']),
                 onTap   : () {
-                  print(locationList[index]);
                   callback(locationList[index]);
                   Navigator.pop(context);
                 },
