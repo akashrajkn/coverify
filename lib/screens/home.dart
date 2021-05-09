@@ -6,11 +6,12 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:coverify/constants.dart';
-import 'package:coverify/theme.dart';
-
+import 'package:coverify/models/location.dart';
 import 'package:coverify/screens/browse_page.dart';
 import 'package:coverify/screens/dialer_page.dart';
 import 'package:coverify/screens/recent_page.dart';
+import 'package:coverify/theme.dart';
+import 'package:coverify/utils/api.dart';
 import 'package:coverify/utils/misc.dart';
 import 'package:coverify/widgets/appbar.dart';
 import 'package:coverify/widgets/location_sheet.dart';
@@ -24,17 +25,16 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
+  bool       initApp              = true;
   BrowsePage browsePage;
   Dialer     dialerPage;
-  RecentPage recentPage;
   int currentNavigationIndex      = -1;
-  List<Widget> navigationChildren = [];
   GlobalKey<BrowsePageState> browsePageKey = GlobalKey();
 
-  String currentLocation          = '';
-  String currentLocationID        = '';
+  LocationModel currentLocation   = LocationModel(id: '', name: '');
   var locationList                = [];
   var resourcesList               = [];
+  var statusList                  = [];
 
   SharedPreferences prefs;
 
@@ -47,13 +47,12 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     });
 
-    getLocationsFromDB()
+    getInitDataFromBackend()
     .then((_) {
       setHomeLocation().then((_) {
-        browsePage         = BrowsePage(key: browsePageKey, location: { 'name' : currentLocation, 'id': currentLocationID }, resources: resourcesList,);
-        dialerPage         = Dialer();
-        recentPage         = RecentPage();
-        navigationChildren = [browsePage, dialerPage, recentPage];
+
+        browsePage = BrowsePage(key: browsePageKey, location: currentLocation, resources: resourcesList,);
+        dialerPage = Dialer();
         currentNavigationIndex = 0;
       });
     })
@@ -64,18 +63,21 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
   }
 
-  Future<void> getLocationsFromDB() async {
+  Future<void> getInitDataFromBackend() async {
 
-    var response = await http.get(Uri.parse(apiBootstrapURL));
-    final parsed = jsonDecode(response.body);
+    var response = await callBootstrapEndpoint();
+    if (response['request'] == 'error') {
+      Navigator.of(context).pushReplacementNamed(errorRoute, arguments: response['error']);
+    }
 
-    List<dynamic> tempLocations = parsed['locations'];
-    tempLocations.insert(0, { 'id' : '', 'name' : '' }); // FIXME: This is just for compatibility, get rid of it at a later point
-
+    response['locations'].insert(0, LocationModel(id: '', name: '')); // FIXME: This is just for compatibility, get rid of it at a later point
     setState(() {
-      locationList  = tempLocations;
-      resourcesList = parsed['tags'];
+      locationList  = response['locations'];
+      resourcesList = response['resources'];
+      statusList    = response['status'];
     });
+    print(response);
+    print('INIT DATA DONE');
   }
 
   Future<void> setHomeLocation() async {
@@ -86,8 +88,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (loc != '') {
       setState(() {
-        currentLocation   = loc;
-        currentLocationID = locID;
+        currentLocation = LocationModel(id: locID, name: loc);
+        initApp         = false;
       });
       return;
     }
@@ -95,17 +97,15 @@ class _HomeScreenState extends State<HomeScreen> {
     showLocationBottomSheet(context, locationList, locationChanged);
   }
 
-  Future<void> locationChanged(dynamic newLocation) async {
-
-    newLocation['id'] = newLocation['id'].toString();
+  Future<void> locationChanged(LocationModel newLocation) async {
 
     prefs = await SharedPreferences.getInstance();
-    prefs.setString('location', newLocation['name']);
-    prefs.setString('locationID', newLocation['id']);
+    prefs.setString('location',   newLocation.name);
+    prefs.setString('locationID', newLocation.id);
 
     setState(() {
-      currentLocation   = newLocation['name'];
-      currentLocationID = newLocation['id'];
+      initApp         = false;
+      currentLocation = newLocation;
     });
 
     if (browsePageKey.currentState != null) {
@@ -117,16 +117,23 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      backgroundColor    : Colors.white,
-      appBar             : appBarCommon(currentLocation, () { showLocationBottomSheet(context, locationList, locationChanged); }, currentNavigationIndex == 0),
-      body               : currentNavigationIndex == -1 ? Container() : navigationChildren[currentNavigationIndex],
+      backgroundColor : Colors.white,
+      appBar          : appBarCommon(currentLocation, () { showLocationBottomSheet(context, locationList, locationChanged); }, !initApp && currentNavigationIndex == 0),
+      body            : initApp || (currentNavigationIndex == -1) ? Container() : IndexedStack(
+        index    : currentNavigationIndex,
+        children : [
+          browsePage,
+          dialerPage,
+          RecentPage(key: GlobalKey())
+        ],
+      ),
       bottomNavigationBar: currentNavigationIndex == -1 ? null : BottomNavigationBar(
         type         : BottomNavigationBarType.fixed,
         currentIndex : currentNavigationIndex,
         items        : [
-          BottomNavigationBarItem(icon: Icon(Icons.person_search), label: 'Browse'),
-          BottomNavigationBarItem(icon: Icon(Icons.dialpad),       label: 'Dial New'),
-          BottomNavigationBarItem(icon: Icon(Icons.av_timer),      label: 'Recent')
+          BottomNavigationBarItem(icon: Icon(Icons.person_search_rounded), label: 'Browse'),
+          BottomNavigationBarItem(icon: Icon(Icons.dialpad_rounded),       label: 'Dial New'),
+          BottomNavigationBarItem(icon: Icon(Icons.av_timer_rounded),      label: 'Recent')
         ],
         onTap        : (int _index) {
           setState(() { currentNavigationIndex = _index; });

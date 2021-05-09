@@ -3,6 +3,10 @@ import 'package:intl/intl.dart';
 
 String prettifyNumberForCard(int num) {
 
+  if (num == null) {
+    return '';
+  }
+
   if (num > 1000) {
     int ks = (num / 1000).floor();
 
@@ -14,9 +18,17 @@ String prettifyNumberForCard(int num) {
 
 String prettifyTimeForCard(String formattedTime) {
 
-  var dateTime = DateTime.parse(formattedTime);
+  print("------------------");
+  print(formattedTime);
+  print("------------------");
 
-  return DateFormat.jm().format(dateTime);
+  try {
+    var dateTime = DateTime.parse(formattedTime);
+    return DateFormat.jm().format(dateTime);
+  } on Exception catch (_) {
+    return '';
+  }
+
 }
 
 

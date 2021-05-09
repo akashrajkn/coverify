@@ -1,11 +1,13 @@
-import 'package:coverify/models/contact_card.dart';
 import 'package:flutter/material.dart';
 
+import 'package:coverify/models/contact.dart';
 import 'package:coverify/utils/db.dart';
 import 'package:coverify/widgets/contact_card.dart';
 
 
 class RecentPage extends StatefulWidget {
+
+  RecentPage({Key key}) : super(key: key);
 
   @override
   _RecentPageState createState() => _RecentPageState();
@@ -30,20 +32,24 @@ class _RecentPageState extends State<RecentPage> {
 
     var db      = await getCoverifyDatabase();
     recentCalls = await fetchRecentCallsFromDatabase(db) ?? [];
-    List<ContactCardModel> tempCalls = [];
+    List<ContactModel> tempCalls = [];
 
     for (int i = 0; i < recentCalls.length; i++) {
 
-      tempCalls.add(ContactCardModel(
+      tempCalls.add(ContactModel(
           name              : recentCalls[i]['name'],
           contactNumber     : recentCalls[i]['contactNumber'],
           lastActivity      : recentCalls[i]['calledTime'],
-          helpfulCount      : recentCalls[i]['helpfulCount'],
-          unresponsiveCount : recentCalls[i]['unresponsiveCount'],
-          outOfStockCount   : recentCalls[i]['outOfStockCount'],
-          notWorkingCount   : recentCalls[i]['notWorkingCount'],
-          state             : recentCalls[i]['state'] ?? 'unknown',
-          type              : recentCalls[i]['category'].split(',')
+          counts            : {
+            recentCalls[i]['category'] : {
+              'helpfulCount'      : recentCalls[i]['helpfulCount'],
+              'unresponsiveCount' : recentCalls[i]['unresponsiveCount'],
+              'outOfStockCount'   : recentCalls[i]['outOfStockCount'],
+              'invalidCount'      : recentCalls[i]['notWorkingCount'],
+            }
+          },
+          lastState         : recentCalls[i]['state'] ?? 'unknown',
+          resourceID        : recentCalls[i]['category'].split(',')
       ));
     }
 

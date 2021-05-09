@@ -6,9 +6,11 @@ import 'package:http/http.dart' as http;
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 
 import 'package:coverify/constants.dart';
-import 'package:coverify/dummy_data.dart';
 import 'package:coverify/theme.dart';
-import 'package:coverify/models/contact_card.dart';
+import 'package:coverify/models/contact.dart';
+import 'package:coverify/models/location.dart';
+import 'package:coverify/models/resource.dart';
+import 'package:coverify/utils/api.dart';
 import 'package:coverify/utils/call_helper.dart';
 import 'package:coverify/utils/db.dart';
 import 'package:coverify/widgets/contact_card.dart';
@@ -17,8 +19,8 @@ import 'package:coverify/widgets/feedback_sheet.dart';
 
 class BrowsePage extends StatefulWidget {
 
-  final dynamic location;
-  final dynamic resources;
+  final LocationModel location;
+  final List<ResourceModel> resources;
   BrowsePage({Key key, this.location, this.resources}) : super(key: key);
 
   @override
@@ -28,11 +30,9 @@ class BrowsePage extends StatefulWidget {
 
 class BrowsePageState extends State<BrowsePage> {
 
-  String currentLocation   = '';
-  String currentLocationID = '';
-  String chosenFilter      = '';
-  int    offset            = 0;
-
+  LocationModel currentLocation;
+  String chosenFilter    = '';
+  int    offset          = 0;
   var contactsList       = [];
   bool isLoading         = true;
   bool isLazyLoading     = true;
@@ -42,9 +42,11 @@ class BrowsePageState extends State<BrowsePage> {
   @override
   void initState() {
 
-    chosenFilter = widget.resources[0]['id'].toString();
+    chosenFilter = widget.resources[0].id;
 
-    getContactsForLocation(widget.location);
+    if (widget.location != null && widget.location.id.isNotEmpty) {
+      getFilteredContactsForLocation(widget.location);
+    }
 
     super.initState();
   }
@@ -56,69 +58,48 @@ class BrowsePageState extends State<BrowsePage> {
     }
   }
 
-  Future<void> getContactsForLocation(dynamic location) async {
+  Future<void> getFilteredContactsForLocation(LocationModel whichLocation) async {
 
     setState(() { isLoading = true; });
 
-    String locationID  = location['id'];
-    chosenFilter       = '3';
-
-    String getContactsURL = apiFilterContactsURL + '?location=$locationID&requirement=$chosenFilter&offset=$offset';
-    print(getContactsURL);
-
-    var response = await http.get(Uri.parse(getContactsURL));
-    final parsed = jsonDecode(response.body);
-
-    print(parsed);
-
-    var responseContacts = [];
-    for (int i = 0; i < parsed['data'].length; i++) {
-      responseContacts.add(ContactCardModel(
-          name              : parsed['data'][i]['name'],
-          contactNumber     : parsed['data'][i]['contactNumber'],
-          lastActivity      : '1974-03-20 00:00:00.000',
-          helpfulCount      : 1, //parsed['data'][i]['tags'][0]['totalWorkedCount'],
-          unresponsiveCount : 1, //parsed['data'][i]['tags'][0]['totalUnresponsiveCount'],
-          outOfStockCount   : 0,
-          notWorkingCount   : 1, //parsed['data'][i]['tags'][0]['totalNotWorkedCount'],
-          state             : 'helpful',
-          type              : ['3']
-      ));
+    ResourceModel whichResource = widget.resources.firstWhere((element) => element.id == chosenFilter, orElse: () { return null; });
+    var response                = await callFilterContactsEndpoint(whichLocation, whichResource, 0);
+    if (response['request'] == 'error') {
+      Navigator.of(context).pushReplacementNamed(errorRoute, arguments: response['error']);
     }
 
     setState(() {
-      isLoading             = false;
-      contactsList          = responseContacts;
-      currentLocation       = location['name'];
-      currentLocationID     = location['id'];
+      isLoading       = false;
+      contactsList    = response['contacts'];
+      currentLocation = whichLocation;
     });
   }
 
-  void locationUpdated(dynamic newLocation) {
-    getContactsForLocation(newLocation);
+  void locationUpdated(LocationModel newLocation) {
+    print('location updated from browse page');
+    getFilteredContactsForLocation(newLocation);
   }
 
   void filterChanged(String newFilter) {
 
     if (newFilter == chosenFilter) {
-      newFilter = '';
+      // newFilter = '';
+      return;
     }
 
     setState(() { chosenFilter = newFilter; });
+
+    getFilteredContactsForLocation(currentLocation);
   }
 
   Future refreshContacts() async {
-    await Future.delayed(Duration(seconds: 2));
-    setState(() { contactsList = contactsDummy; });
   }
 
   Future _loadMoreContacts() async {
-    setState(() { isLazyLoading = true; });
-    await Future.delayed(Duration(milliseconds: 500));
-    setState(() { isLazyLoading = false; });
+
   }
 
-  Future<void> callNumberAndSaveFeedback(ContactCardModel model) async {
+  Future<void> callNumberAndSaveFeedback(ContactModel model) async {
 
     print(model.contactNumber);
 
@@ -128,9 +109,7 @@ class BrowsePageState extends State<BrowsePage> {
         (feedback) {
         // TODO: Update online database
         print(feedback);
-
-        // TODO: Add record to local database
-        insertRecordToDatabase(null, model);
+        insertRecordToDatabase(null, model, chosenFilter);
 
         final snackBar = SnackBar(
           backgroundColor : feedbackColors[feedback],
@@ -160,21 +139,28 @@ class BrowsePageState extends State<BrowsePage> {
         Text('Each contact is updated with the most recent status'),
         SizedBox(height: 20,),
         SingleChildScrollView(
+          padding: EdgeInsets.fromLTRB(30, 0, 20, 0),
           scrollDirection : Axis.horizontal,
           child           : Row(
             crossAxisAlignment : CrossAxisAlignment.center,
             mainAxisAlignment  : MainAxisAlignment.start,
-            children: [
-              SizedBox(width: 30,),
-              OutlinedButton(onPressed: (){ filterChanged('oxygen'); },     child: Text('oxygen', style: TextStyle(fontWeight: chosenFilter == 'oxygen' ? FontWeight.bold : FontWeight.normal),)),
-              SizedBox(width: 10,),
-              OutlinedButton(onPressed: (){ filterChanged('bed'); },        child: Text('bed', style: TextStyle(fontWeight: chosenFilter == 'bed' ? FontWeight.bold : FontWeight.normal),)),
-              SizedBox(width: 10,),
-              OutlinedButton(onPressed: (){ filterChanged('injections'); }, child: Text('injections & medicines', style: TextStyle(fontWeight: chosenFilter == 'injections' ? FontWeight.bold : FontWeight.normal),)),
-              SizedBox(width: 10,),
-              OutlinedButton(onPressed: (){ filterChanged('plasma'); },     child: Text('plasma', style: TextStyle(fontWeight: chosenFilter == 'plasma' ? FontWeight.bold : FontWeight.normal),)),
-              SizedBox(width: 30,),
-            ],
+            children           : List<Widget>.generate(widget.resources.length, (index) {
+
+              return Container(
+                padding : EdgeInsets.fromLTRB(0, 0, 10, 0),
+                child   : TextButton(
+                  style     : TextButton.styleFrom(
+                    primary         : chosenFilter == widget.resources[index].id ? Colors.white : primaryColor,
+                    backgroundColor : chosenFilter == widget.resources[index].id ? primaryColor : Colors.white,
+                    onSurface       : Colors.grey,
+                    side            : BorderSide(color: primaryColor, width: 0.5),
+                    padding         : EdgeInsets.fromLTRB(15, 0, 15, 0),
+                  ),
+                  onPressed : () { filterChanged(widget.resources[index].id); },
+                  child     : Text(widget.resources[index].name, style: TextStyle(fontWeight: chosenFilter == widget.resources[index].id ? FontWeight.bold : FontWeight.normal, fontSize: 13),)
+                ),
+              );
+            }),
           ),
         ),
         isLoading ? Container(

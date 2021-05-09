@@ -10,6 +10,7 @@ import 'package:coverify/models/resource.dart';
 Future<dynamic> callBootstrapEndpoint() async {
 
   String url = apiBootstrapURL;
+  print(url);
 
   try {
     var response = await http.get(Uri.parse(url));
@@ -24,10 +25,10 @@ Future<dynamic> callBootstrapEndpoint() async {
     }
 
     List<ResourceModel> resources = [];
-    for (int i = 0; i < parsed['tags'].length; i++) {
+    for (int i = 0; i < parsed['requirements'].length; i++) {
       resources.add(ResourceModel(
-        id   : parsed['resources'][i]['id'].toString(),
-        name : parsed['resources'][i]['name'],
+        id   : parsed['requirements'][i]['id'].toString(),
+        name : parsed['requirements'][i]['name'],
       ));
     }
 
@@ -48,7 +49,8 @@ Future<dynamic> callBootstrapEndpoint() async {
 
 Future<dynamic> callFilterContactsEndpoint(LocationModel location, ResourceModel resource, int offset) async {
 
-  String url = apiFilterContactsURL + '?location=${location.id}&requirement=${resource.id}&offset=${offset}';
+  String url = apiFilterContactsURL + '?location=${location.id}&requirement=${resource.id}&offset=$offset';
+  print(url);
 
   try {
     var response = await http.get(Uri.parse(url));
@@ -59,17 +61,24 @@ Future<dynamic> callFilterContactsEndpoint(LocationModel location, ResourceModel
 
       List<String> resourceID     = [];
       Map<String, dynamic> counts = {};
-      List<dynamic> tags          = parsed['data']['tags'];
+      String lastState            = '';
+      String lastActivity         = '';
+      List<dynamic> tags          = parsed['data'][i]['requirements'];
 
       for (int j = 0; j < tags.length; j++) {
-        String _id = tags[j]['id'].toString();
+        String _id = tags[j]['requirement'].toString();
+
+        if (_id == resource.id) {
+          lastState    = tags[j]['meta']['lastReportedStatus'] ?? '';
+          lastActivity = tags[j]['updated_at'] ?? '';
+        }
 
         resourceID.add(_id);
         counts[_id] = {
-          'helpfulCount'      : tags[j]['meta']['totalWorkedCount'],
+          'helpfulCount'      : tags[j]['meta']['totalHelpfulCount'],
           'unresponsiveCount' : tags[j]['meta']['totalUnresponsiveCount'],
-          'invalidCount'      : tags[j]['meta']['totalNotWorkedCount'],
-          'outOfStockCount'   : tags[j]['meta']['totalNotWorkedCount'],
+          'invalidCount'      : tags[j]['meta']['totalInvalidCount'],
+          'outOfStockCount'   : tags[j]['meta']['totalOutOfStockCount'],
         };
       }
 
@@ -78,8 +87,8 @@ Future<dynamic> callFilterContactsEndpoint(LocationModel location, ResourceModel
         name          : parsed['data'][i]['name'],
         contactNumber : parsed['data'][i]['contactNumber'],
         locationID    : parsed['data'][i]['location'].toString(),
-        lastActivity  : parsed['data'][i]['lastActivity'] ?? '',
-        lastState     : parsed['data'][i]['lastState'] ?? '',
+        lastActivity  : lastActivity,
+        lastState     : lastState,
         resourceID    : resourceID,
         counts        : counts,
       ));
@@ -94,6 +103,11 @@ Future<dynamic> callFilterContactsEndpoint(LocationModel location, ResourceModel
     return {
       'request' : 'error',
       'error'   : _.toString(),
+    };
+  } catch (error) {
+    return {
+      'request'  : 'success',
+      'contacts' : []
     };
   }
 }

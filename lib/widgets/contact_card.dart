@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-import 'package:coverify/models/contact_card.dart';
+import 'package:coverify/models/contact.dart';
 import 'package:coverify/utils/pretty.dart';
 
 
-Widget contactCardWidget(ContactCardModel model, Function callback, String filter) {
+Widget contactCardWidget(ContactModel model, Function callback, String filter) {
 
-  if (filter.isNotEmpty && !model.type.contains(filter)) {
+  if (filter.isNotEmpty && !model.resourceID.contains(filter)) {
     return Container();
   }
 
@@ -22,7 +22,7 @@ Widget contactCardWidget(ContactCardModel model, Function callback, String filte
   String      stateText  = '';
   Color       stateTextColor;
 
-  switch (model.state) {
+  switch (model.lastState) {
     case 'helpful':
       colorsList[0]  = Colors.green;
       stateText      = 'helpful';
@@ -35,7 +35,7 @@ Widget contactCardWidget(ContactCardModel model, Function callback, String filte
       stateTextColor = Colors.red;
       break;
 
-    case 'out_of_stock':
+    case 'out of stock':
       colorsList[2]  = Colors.orange;
       stateText      = 'out of stock';
       stateTextColor = Colors.orange;
@@ -47,7 +47,7 @@ Widget contactCardWidget(ContactCardModel model, Function callback, String filte
       stateTextColor = Colors.black;
       break;
   }
-  
+
   return Card(
     elevation : 0,
 
@@ -68,21 +68,21 @@ Widget contactCardWidget(ContactCardModel model, Function callback, String filte
 
             children          : <Widget>[
               SizedBox(width: 17,),
-              Icon(Icons.thumb_up, size: 20, color: colorsList[0]),
+              Icon(Icons.thumb_up_rounded, size: 20, color: colorsList[0]),
               SizedBox(width: 3,),
-              Text(prettifyNumberForCard(model.helpfulCount), style: TextStyle(color: colorsList[0]),),
+              Text(prettifyNumberForCard(model.counts[filter]['helpfulCount']), style: TextStyle(color: colorsList[0]),),
               SizedBox(width: 15,),
-              Icon(Icons.phone_missed, size: 20, color: colorsList[1],),
+              Icon(Icons.phone_missed_rounded, size: 20, color: colorsList[1],),
               SizedBox(width: 3,),
-              Text(prettifyNumberForCard(model.unresponsiveCount), style: TextStyle(color: colorsList[1]),),
+              Text(prettifyNumberForCard(model.counts[filter]['unresponsiveCount']), style: TextStyle(color: colorsList[1]),),
               SizedBox(width: 15,),
-              Icon(Icons.shopping_cart_outlined, size: 20, color: colorsList[2]),
+              Icon(Icons.remove_shopping_cart_rounded, size: 20, color: colorsList[2]),
               SizedBox(width: 3,),
-              Text(prettifyNumberForCard(model.outOfStockCount), style: TextStyle(color: colorsList[2]),),
+              Text(prettifyNumberForCard(model.counts[filter]['outOfStockCount']), style: TextStyle(color: colorsList[2]),),
               SizedBox(width: 15,),
-              Icon(Icons.block, size: 20, color: colorsList[3],),
+              Icon(Icons.block_rounded, size: 20, color: colorsList[3],),
               SizedBox(width: 3,),
-              Text(prettifyNumberForCard(model.notWorkingCount), style: TextStyle(color: colorsList[3]),),
+              Text(prettifyNumberForCard(model.counts[filter]['invalidCount']), style: TextStyle(color: colorsList[3]),),
               Spacer(),
               Container(
                 padding : EdgeInsets.fromLTRB(0, 0, 16, 0),

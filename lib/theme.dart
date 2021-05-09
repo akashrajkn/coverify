@@ -22,17 +22,17 @@ const MaterialColor primaryColorMaterial = const MaterialColor(
 Map<String, Color> feedbackColors = {
   'helpful'      : Colors.green,
   'unresponsive' : Colors.red,
-  'out_of_stock' : Colors.orange,
+  'out of stock' : Colors.orange,
   'invalid'      : Colors.black,
   'unknown'      : Colors.grey,
 };
 
 Map<String, IconData> feedbackIconData = {
-  'helpful'      : Icons.thumb_up,
-  'unresponsive' : Icons.phone_missed,
-  'out_of_stock' : Icons.shopping_cart_outlined,
-  'invalid'      : Icons.block,
-  'unknown'      : Icons.device_unknown_outlined,
+  'helpful'      : Icons.thumb_up_rounded,
+  'unresponsive' : Icons.phone_missed_rounded,
+  'out of stock' : Icons.remove_shopping_cart_rounded,
+  'invalid'      : Icons.block_rounded,
+  'unknown'      : Icons.device_unknown_rounded,
 };
 
 

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'package:coverify/models/location.dart';
 
-void showLocationBottomSheet(BuildContext context, dynamic locationList, Function callback) {
+
+Future<void> showLocationBottomSheet(BuildContext context, List<LocationModel> locationList, Function callback) async {
 
   showModalBottomSheet(
     context : context,
@@ -29,7 +31,7 @@ void showLocationBottomSheet(BuildContext context, dynamic locationList, Functio
               }
 
               return ListTile(
-                title   : Text(locationList[index]['name']),
+                title   : Text(locationList[index].name),
                 onTap   : () {
                   callback(locationList[index]);
                   Navigator.pop(context);
