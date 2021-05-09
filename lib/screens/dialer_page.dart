@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 
+import 'package:coverify/models/resource.dart';
 import 'package:coverify/theme.dart';
 import 'package:coverify/utils/call_helper.dart';
 import 'package:coverify/utils/pretty.dart';
 import 'package:coverify/widgets/category_sheet.dart';
 import 'package:coverify/widgets/dial_button.dart';
 import 'package:coverify/widgets/feedback_sheet.dart';
+import 'package:coverify/widgets/resource_sheet.dart';
 
 
 class Dialer extends StatefulWidget {
+
+  final List<ResourceModel> resources;
+  Dialer({this.resources});
 
   @override
   _DialerState createState() => _DialerState();
@@ -35,38 +40,46 @@ class _DialerState extends State<Dialer> {
 
   Future<void> callButtonTapped() async {
 
-    final diff = await callHelper.callAndGetDuration(dialledNumber);
+    // final diff = await callHelper.callAndGetDuration(dialledNumber);
 
-    showFeedbackBottomSheet(
+    showResourcesBottomSheet(
       context,
-      (feedback) {
-        // TODO: Update database
-        print(feedback);
-
-        showCategoryBottomSheet(
-          context,
-          (category) {
-            // TODO: Update database
-            print(category);
-
-            final snackBar = SnackBar(
-              backgroundColor : Colors.green,
-              content         : Row(
-                mainAxisAlignment  : MainAxisAlignment.center,
-                crossAxisAlignment : CrossAxisAlignment.center,
-
-                children: [
-                  Icon(Icons.check_circle, color: Colors.white, size: 20,),
-                  SizedBox(width: 5,),
-                  Text('Contact added', style: TextStyle(color: Colors.white),)
-                ],
-              ),
-            );
-            ScaffoldMessenger.of(context).showSnackBar(snackBar);
-          }
-        );
-      }
+      widget.resources,
+      (resourceID) {
+        print(resourceID);
+      },
     );
+
+    // showFeedbackBottomSheet(
+    //   context,
+    //   (feedback) {
+    //     // TODO: Update database
+    //     print(feedback);
+    //
+    //     showCategoryBottomSheet(
+    //       context,
+    //       (category) {
+    //         // TODO: Update database
+    //         print(category);
+    //
+    //         final snackBar = SnackBar(
+    //           backgroundColor : Colors.green,
+    //           content         : Row(
+    //             mainAxisAlignment  : MainAxisAlignment.center,
+    //             crossAxisAlignment : CrossAxisAlignment.center,
+    //
+    //             children: [
+    //               Icon(Icons.check_circle, color: Colors.white, size: 20,),
+    //               SizedBox(width: 5,),
+    //               Text('Contact added', style: TextStyle(color: Colors.white),)
+    //             ],
+    //           ),
+    //         );
+    //         ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    //       }
+    //     );
+    //   }
+    // );
   }
 
   @override
