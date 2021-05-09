@@ -14,7 +14,7 @@ void showResourcesBottomSheet(BuildContext context, List<ResourceModel> resource
       return Wrap(
         children: <Widget>[
           Container(
-            color : Colors.yellow,
+            color : Colors.white,
             child : Container(
               padding    : EdgeInsets.fromLTRB(20, 20, 10, 5),
               // width      : 1500,

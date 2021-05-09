@@ -1,3 +1,4 @@
+import 'package:coverify/widgets/name_sheet.dart';
 import 'package:flutter/material.dart';
 
 import 'package:coverify/models/resource.dart';
@@ -42,13 +43,22 @@ class _DialerState extends State<Dialer> {
 
     // final diff = await callHelper.callAndGetDuration(dialledNumber);
 
-    showResourcesBottomSheet(
-      context,
-      widget.resources,
-      (resourceID) {
-        print(resourceID);
-      },
-    );
+    // showResourcesBottomSheet(
+    //   context,
+    //   widget.resources,
+    //   (resourceID) {
+    //     print(resourceID);
+    //   },
+    // );
+
+    showNameBottomSheet(context, (contactName) {
+
+      print("())()()()()()()()()");
+      print(contactName);
+      print("())()()()()()()()()");
+    });
+
+    /////////////////////////////////////////////////////////////////////
 
     // showFeedbackBottomSheet(
     //   context,
