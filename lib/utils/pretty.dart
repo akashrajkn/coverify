@@ -18,10 +18,6 @@ String prettifyNumberForCard(int num) {
 
 String prettifyTimeForCard(String formattedTime) {
 
-  print("------------------");
-  print(formattedTime);
-  print("------------------");
-
   try {
     var dateTime = DateTime.parse(formattedTime);
     return DateFormat.jm().format(dateTime);

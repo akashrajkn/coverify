@@ -1,8 +1,5 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 
-import 'package:http/http.dart' as http;
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 
 import 'package:coverify/constants.dart';
@@ -31,11 +28,14 @@ class BrowsePage extends StatefulWidget {
 class BrowsePageState extends State<BrowsePage> {
 
   LocationModel currentLocation;
+  ResourceModel currentResource;
   String chosenFilter    = '';
   int    offset          = 0;
   var contactsList       = [];
   bool isLoading         = true;
-  bool isLazyLoading     = true;
+  bool isLazyLoading     = false;
+
+  Map<String, dynamic> contactsByFilter = {};
 
   CallHelper callHelper  = CallHelper();
 
@@ -72,6 +72,7 @@ class BrowsePageState extends State<BrowsePage> {
       isLoading       = false;
       contactsList    = response['contacts'];
       currentLocation = whichLocation;
+      currentResource = whichResource;
     });
   }
 
@@ -87,16 +88,36 @@ class BrowsePageState extends State<BrowsePage> {
       return;
     }
 
-    setState(() { chosenFilter = newFilter; });
+    setState(() {
+      chosenFilter = newFilter;
+      offset       = 0;
+    });
 
     getFilteredContactsForLocation(currentLocation);
   }
 
   Future refreshContacts() async {
+    setState(() { offset = 0; });
+    getFilteredContactsForLocation(currentLocation);
   }
 
   Future _loadMoreContacts() async {
 
+    setState(() { isLazyLoading = true; });
+
+    int newOffset = offset + 1;
+    var response  = await callFilterContactsEndpoint(currentLocation, currentResource, newOffset);
+    if (response['request'] == 'error') {
+      Navigator.of(context).pushReplacementNamed(errorRoute, arguments: response['error']);
+    }
+
+    setState(() {
+      if (response['contacts'].length > 0) { offset = newOffset; }
+      contactsList  = contactsList + response['contacts'];
+      isLazyLoading = false;
+    });
+
+    print('DONE LOADING NEW STUFF');
   }
 
   Future<void> callNumberAndSaveFeedback(ContactModel model) async {
@@ -171,6 +192,7 @@ class BrowsePageState extends State<BrowsePage> {
           child: LazyLoadScrollView(
             isLoading       : isLazyLoading,
             onEndOfPage     : () => _loadMoreContacts(),
+            scrollOffset    : 100,
             child           : RefreshIndicator(
               onRefresh       : refreshContacts,
               backgroundColor : primaryColor,

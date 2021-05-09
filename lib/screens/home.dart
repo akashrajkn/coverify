@@ -1,8 +1,5 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 
-import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:coverify/constants.dart';
@@ -10,7 +7,6 @@ import 'package:coverify/models/location.dart';
 import 'package:coverify/screens/browse_page.dart';
 import 'package:coverify/screens/dialer_page.dart';
 import 'package:coverify/screens/recent_page.dart';
-import 'package:coverify/theme.dart';
 import 'package:coverify/utils/api.dart';
 import 'package:coverify/utils/misc.dart';
 import 'package:coverify/widgets/appbar.dart';
