@@ -120,7 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children : [
           browsePage,
           dialerPage,
-          RecentPage(key: GlobalKey())
+          RecentPage(key: GlobalKey(), resources: resourcesList,)
         ],
       ),
       bottomNavigationBar: currentNavigationIndex == -1 ? null : BottomNavigationBar(

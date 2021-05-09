@@ -41,9 +41,9 @@ Widget contactCardWidget(ContactModel model, Function callback, String filter) {
       stateTextColor = Colors.orange;
       break;
 
-    case 'not_working':
+    case 'invalid':
       colorsList[3]  = Colors.black;
-      stateText      = 'not working';
+      stateText      = 'invalid';
       stateTextColor = Colors.black;
       break;
   }

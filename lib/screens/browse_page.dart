@@ -130,6 +130,11 @@ class BrowsePageState extends State<BrowsePage> {
         (feedback) {
         // TODO: Update online database
         print(feedback);
+        callReportContactURL(model.contactNumber, true, chosenFilter, feedback, '', '')
+        .then((value) {
+          print('report api response');
+          print(value);
+        });
         insertRecordToDatabase(null, model, chosenFilter);
 
         final snackBar = SnackBar(

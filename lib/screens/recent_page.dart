@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 
 import 'package:coverify/models/contact.dart';
+import 'package:coverify/models/resource.dart';
+import 'package:coverify/theme.dart';
 import 'package:coverify/utils/db.dart';
 import 'package:coverify/widgets/contact_card.dart';
 
 
 class RecentPage extends StatefulWidget {
 
-  RecentPage({Key key}) : super(key: key);
+  final List<ResourceModel> resources;
+  RecentPage({Key key, this.resources}) : super(key: key);
 
   @override
   _RecentPageState createState() => _RecentPageState();
@@ -24,6 +27,9 @@ class _RecentPageState extends State<RecentPage> {
   @override
   void initState() {
 
+    print(widget.resources);
+
+    chosenFilter = widget.resources[0].id;
     openDatabaseAndFetchRecords();
     super.initState();
   }
@@ -78,21 +84,28 @@ class _RecentPageState extends State<RecentPage> {
         Text(''),
         SizedBox(height: 20,),
         SingleChildScrollView(
+          padding: EdgeInsets.fromLTRB(30, 0, 20, 0),
           scrollDirection : Axis.horizontal,
           child           : Row(
             crossAxisAlignment : CrossAxisAlignment.center,
             mainAxisAlignment  : MainAxisAlignment.start,
-            children: [
-              SizedBox(width: 30,),
-              OutlinedButton(onPressed: (){ filterChanged('oxygen'); },     child: Text('oxygen', style: TextStyle(fontWeight: chosenFilter == 'oxygen' ? FontWeight.bold : FontWeight.normal),)),
-              SizedBox(width: 10,),
-              OutlinedButton(onPressed: (){ filterChanged('bed'); },        child: Text('bed', style: TextStyle(fontWeight: chosenFilter == 'bed' ? FontWeight.bold : FontWeight.normal),)),
-              SizedBox(width: 10,),
-              OutlinedButton(onPressed: (){ filterChanged('injections'); }, child: Text('injections & medicines', style: TextStyle(fontWeight: chosenFilter == 'injections' ? FontWeight.bold : FontWeight.normal),)),
-              SizedBox(width: 10,),
-              OutlinedButton(onPressed: (){ filterChanged('plasma'); },     child: Text('plasma', style: TextStyle(fontWeight: chosenFilter == 'plasma' ? FontWeight.bold : FontWeight.normal),)),
-              SizedBox(width: 30,),
-            ],
+            children           : List<Widget>.generate(widget.resources.length, (index) {
+
+              return Container(
+                padding : EdgeInsets.fromLTRB(0, 0, 10, 0),
+                child   : TextButton(
+                    style     : TextButton.styleFrom(
+                      primary         : chosenFilter == widget.resources[index].id ? Colors.white : primaryColor,
+                      backgroundColor : chosenFilter == widget.resources[index].id ? primaryColor : Colors.white,
+                      onSurface       : Colors.grey,
+                      side            : BorderSide(color: primaryColor, width: 0.5),
+                      padding         : EdgeInsets.fromLTRB(15, 0, 15, 0),
+                    ),
+                    onPressed : () { filterChanged(widget.resources[index].id); },
+                    child     : Text(widget.resources[index].name, style: TextStyle(fontWeight: chosenFilter == widget.resources[index].id ? FontWeight.bold : FontWeight.normal, fontSize: 13),)
+                ),
+              );
+            }),
           ),
         ),
         isLoading ? Container(

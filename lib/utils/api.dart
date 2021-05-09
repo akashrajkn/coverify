@@ -131,18 +131,20 @@ Future<dynamic> callContactStatusEndpoint(String phoneNumber) async {
   }
 }
 
-Future<dynamic> callReportContactURL(String phoneNumber, bool exists, int resourceID, String status, int locationID, String name) async {
+Future<dynamic> callReportContactURL(String phoneNumber, bool exists, String resourceID, String status, String locationID, String name) async {
 
   String url         = apiReportContactURL;
   var body           = {
     'phoneNumber'    : phoneNumber,
-    'tag'            : resourceID,
+    'requirement'    : resourceID,
     'status'         : status
   };
   if (!exists) {
     body['location'] = locationID;
     body['name']     = name;
   }
+
+  print(url);
 
   try {
     await http.post(Uri.parse(url), body: body);
