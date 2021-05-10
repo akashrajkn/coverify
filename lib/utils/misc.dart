@@ -15,3 +15,18 @@ Future<bool> isInternetAvailable() async {
   }
   return false;
 }
+
+
+String getFormattedContactNumber(String number) {
+  if (number.startsWith('0')) {
+    number = number.substring(1);
+  }
+
+  number = number.replaceAll(' ', '');
+
+  if (number.startsWith('+91')) {
+    return number;
+  }
+
+  return '+91' + number;
+}

@@ -48,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
       setHomeLocation().then((_) {
 
         browsePage = BrowsePage(key: browsePageKey, location: currentLocation, resources: resourcesList,);
-        dialerPage = Dialer(resources: resourcesList,);
+        dialerPage = Dialer(locations: locationList, resources: resourcesList,);
         currentNavigationIndex = 0;
       });
     })

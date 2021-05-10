@@ -39,8 +39,8 @@ void showResourcesBottomSheet(BuildContext context, List<ResourceModel> resource
                   return ListTile(
                     title   : Text(resources[index].name, style: TextStyle(color: Colors.black),),
                     onTap   : () {
-                      callback(resources[index].id);
                       Navigator.pop(context);
+                      callback(resources[index].id);
                     },
                   );
                 }),

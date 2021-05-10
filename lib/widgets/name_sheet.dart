@@ -56,7 +56,10 @@ void showNameBottomSheet(BuildContext context, Function callback) {
                         side            : BorderSide(color: Colors.green, width: 0.5),
                         padding         : EdgeInsets.fromLTRB(15, 0, 15, 0),
                       ),
-                      onPressed : () { callback(enteredName); },
+                      onPressed : () {
+                        Navigator.pop(context);
+                        callback(enteredName);
+                      },
                       child     : Text('Add contact', style: TextStyle(fontSize: 19),),
                     ),
                   ),

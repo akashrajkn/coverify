@@ -33,8 +33,8 @@ Future<void> showLocationBottomSheet(BuildContext context, List<LocationModel> l
               return ListTile(
                 title   : Text(locationList[index].name),
                 onTap   : () {
-                  callback(locationList[index]);
                   Navigator.pop(context);
+                  callback(locationList[index]);
                 },
               );
             },

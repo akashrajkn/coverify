@@ -114,6 +114,7 @@ Future<dynamic> callFilterContactsEndpoint(LocationModel location, ResourceModel
 
 Future<dynamic> callContactStatusEndpoint(String phoneNumber) async {
   String url = apiContactStatusURL;
+  print(url);
 
   try {
     var response = await http.post(Uri.parse(url), body: {'phoneNumber' : phoneNumber});
@@ -128,12 +129,19 @@ Future<dynamic> callContactStatusEndpoint(String phoneNumber) async {
       'request' : 'error',
       'error'   : _.toString()
     };
+  } catch (error) {
+    return {
+      'request' : 'error',
+      'error'   : error,
+    };
   }
 }
 
 Future<dynamic> callReportContactURL(String phoneNumber, bool exists, String resourceID, String status, String locationID, String name) async {
 
   String url         = apiReportContactURL;
+  print(url);
+
   var body           = {
     'phoneNumber'    : phoneNumber,
     'requirement'    : resourceID,
@@ -143,8 +151,6 @@ Future<dynamic> callReportContactURL(String phoneNumber, bool exists, String res
     body['location'] = locationID;
     body['name']     = name;
   }
-
-  print(url);
 
   try {
     await http.post(Uri.parse(url), body: body);
