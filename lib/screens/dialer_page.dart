@@ -93,7 +93,7 @@ class _DialerState extends State<Dialer> {
     print(response);
 
     final snackBar = SnackBar(
-      duration        : Duration(seconds: 3),
+      duration        : Duration(seconds: 2),
       backgroundColor : Colors.green,
       content         : Row(
         mainAxisAlignment  : MainAxisAlignment.center,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:imei_plugin/imei_plugin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:coverify/constants.dart';
@@ -32,6 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
   var resourcesList               = [];
   var statusList                  = [];
 
+  String imei                     = '';
   SharedPreferences prefs;
 
   @override
@@ -53,7 +55,14 @@ class _HomeScreenState extends State<HomeScreen> {
       Navigator.of(context).pushNamed(errorRoute, arguments: error.toString());
     });
 
+    getImei();
+
     super.initState();
+  }
+
+  Future<void> getImei() async {
+    String _imei = await ImeiPlugin.getImei();
+    setState(() { imei = _imei; });
   }
 
   Future<void> getInitDataFromBackend() async {

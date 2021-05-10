@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 
@@ -128,7 +127,7 @@ class BrowsePageState extends State<BrowsePage> {
         print(feedback);
 
         final snackBar = SnackBar(
-          duration        : Duration(seconds: 3),
+          duration        : Duration(seconds: 2),
           backgroundColor : feedbackColors[feedback],
           content         : Row(
             mainAxisAlignment  : MainAxisAlignment.center,
