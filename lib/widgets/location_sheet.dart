@@ -6,8 +6,9 @@ import 'package:coverify/models/location.dart';
 Future<void> showLocationBottomSheet(BuildContext context, List<LocationModel> locationList, Function callback) async {
 
   showModalBottomSheet(
-    context : context,
-    builder : (context) {
+    isDismissible : false,
+    context       : context,
+    builder       : (context) {
 
       return Container(
         color : Color(0xff737373),

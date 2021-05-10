@@ -46,10 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
     getInitDataFromBackend()
     .then((_) {
       setHomeLocation().then((_) {
-
-        browsePage = BrowsePage(key: browsePageKey, location: currentLocation, resources: resourcesList,);
-        dialerPage = Dialer(locations: locationList, resources: resourcesList,);
-        currentNavigationIndex = 0;
+        setState(() { });
       });
     })
     .onError((error, stackTrace) {
@@ -86,6 +83,9 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         currentLocation = LocationModel(id: locID, name: loc);
         initApp         = false;
+        browsePage      = BrowsePage(key: browsePageKey, location: LocationModel(id: locID, name: loc), resources: resourcesList,);
+        dialerPage      = Dialer(locations: locationList, resources: resourcesList,);
+        currentNavigationIndex = 0;
       });
       return;
     }
@@ -98,6 +98,14 @@ class _HomeScreenState extends State<HomeScreen> {
     prefs = await SharedPreferences.getInstance();
     prefs.setString('location',   newLocation.name);
     prefs.setString('locationID', newLocation.id);
+
+    if (initApp) {
+      setState(() {
+        browsePage = BrowsePage(key: browsePageKey, location: newLocation, resources: resourcesList,);
+        dialerPage = Dialer(locations: locationList, resources: resourcesList,);
+        currentNavigationIndex = 0;
+      });
+    }
 
     setState(() {
       initApp         = false;
