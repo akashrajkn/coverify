@@ -69,7 +69,6 @@ class _HomeScreenState extends State<HomeScreen> {
       resourcesList = response['resources'];
       statusList    = response['status'];
     });
-    print(response);
     print('INIT DATA DONE');
   }
 
