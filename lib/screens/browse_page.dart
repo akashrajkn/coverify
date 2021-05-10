@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 
@@ -120,39 +121,54 @@ class BrowsePageState extends State<BrowsePage> {
     print('DONE LOADING NEW STUFF');
   }
 
-  Future<void> callNumberAndSaveFeedback(ContactModel model) async {
-
-    print(model.contactNumber);
-
-    final diff = await callHelper.callAndGetDuration(model.contactNumber);
+  void showSnackBarFlow(ContactModel model) {
     showFeedbackBottomSheet(
       context,
-        (feedback) {
-        // TODO: Update online database
+      (feedback) {
         print(feedback);
-        callReportContactURL(model.contactNumber, true, chosenFilter, feedback, '', '')
-        .then((value) {
-          print('report api response');
-          print(value);
-        });
-        insertRecordToDatabase(null, model, chosenFilter);
 
         final snackBar = SnackBar(
+          duration        : Duration(seconds: 3),
           backgroundColor : feedbackColors[feedback],
           content         : Row(
             mainAxisAlignment  : MainAxisAlignment.center,
             crossAxisAlignment : CrossAxisAlignment.center,
 
-            children: [
+            children           : [
               Icon(feedbackIconData[feedback], color: Colors.white, size: 20,),
               SizedBox(width: 5,),
               Text('Number marked as: $feedback', style: TextStyle(color: Colors.white),)
             ],
           ),
+          action          : SnackBarAction(
+            label     : 'UNDO',
+            textColor : Colors.white,
+            onPressed : () { },
+          ),
         );
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      }
+        ScaffoldMessenger.of(context).showSnackBar(snackBar)
+        .closed
+        .then((value) {
+          if (value == SnackBarClosedReason.timeout || value == SnackBarClosedReason.swipe) {
+            callReportContactURL(model.contactNumber, true, chosenFilter, feedback, '', '')
+            .then((value) {
+              print('report api response');
+              print(value);
+            });
+            insertRecordToDatabase(null, model, chosenFilter);
+          } else if (value == SnackBarClosedReason.action) {
+            showSnackBarFlow(model);
+          }
+        });
+      },
     );
+  }
+
+  Future<void> callNumberAndSaveFeedback(ContactModel model) async {
+
+    print(model.contactNumber);
+    final diff = await callHelper.callAndGetDuration(model.contactNumber);
+    showSnackBarFlow(model);
   }
 
   @override

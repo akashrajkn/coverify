@@ -43,35 +43,7 @@ class _DialerState extends State<Dialer> {
     setState(() { dialledNumber = _num; });
   }
 
-  Future<void> callButtonTapped() async {
-
-    String formattedContactNumber = getFormattedContactNumber(dialledNumber);
-    var response = await callContactStatusEndpoint(formattedContactNumber);
-    bool exists  = false;
-    if (response['request'] == 'success') {
-      exists     = response['exists'];
-    }
-
-    print(response);
-
-    final snackBar = SnackBar(
-      backgroundColor : Colors.green,
-      content         : Row(
-        mainAxisAlignment  : MainAxisAlignment.center,
-        crossAxisAlignment : CrossAxisAlignment.center,
-
-        children: [
-          Icon(Icons.check_circle, color: Colors.white, size: 20,),
-          SizedBox(width: 5,),
-          Text('Contact added', style: TextStyle(color: Colors.white),)
-        ],
-      ),
-    );
-
-    final diff   = await callHelper.callAndGetDuration(dialledNumber);
-
-    BuildContext diallerContext = context;
-
+  void showSnackBarFlow(snackBar, diallerContext, exists, formattedContactNumber) {
     showFeedbackBottomSheet(diallerContext, (feedback) {
       print(feedback);
 
@@ -83,17 +55,67 @@ class _DialerState extends State<Dialer> {
 
             showNameBottomSheet(diallerContext, (contactName) {
               print(contactName);
-
-              callReportContactURL(formattedContactNumber, exists, resourceID, feedback, location.id, contactName);
-              ScaffoldMessenger.of(diallerContext).showSnackBar(snackBar);
+              ScaffoldMessenger.of(diallerContext).showSnackBar(snackBar)
+              .closed
+              .then((value) {
+                if (value == SnackBarClosedReason.swipe || value == SnackBarClosedReason.timeout) {
+                  callReportContactURL(formattedContactNumber, exists, resourceID, feedback, location.id, contactName);
+                } else if (value == SnackBarClosedReason.action) {
+                  showSnackBarFlow(snackBar, diallerContext, exists, formattedContactNumber);
+                }
+              });
             });
           });
+
         } else {
-          callReportContactURL(formattedContactNumber, exists, resourceID, feedback, '', '');
-          ScaffoldMessenger.of(diallerContext).showSnackBar(snackBar);
+          ScaffoldMessenger.of(diallerContext).showSnackBar(snackBar)
+          .closed
+          .then((value) {
+            if (value == SnackBarClosedReason.swipe || value == SnackBarClosedReason.timeout) {
+              callReportContactURL(formattedContactNumber, exists, resourceID, feedback, '', '');
+            } else if (value == SnackBarClosedReason.action) {
+              showSnackBarFlow(snackBar, diallerContext, exists, formattedContactNumber);
+            }
+          });
         }
       });
     });
+  }
+
+  Future<void> callButtonTapped() async {
+
+    String formattedContactNumber = getFormattedContactNumber(dialledNumber);
+    var response = await callContactStatusEndpoint(formattedContactNumber);
+    bool exists  = false;
+    if (response['request'] == 'success') {
+      exists     = response['exists'];
+    }
+    print(response);
+
+    final snackBar = SnackBar(
+      duration        : Duration(seconds: 3),
+      backgroundColor : Colors.green,
+      content         : Row(
+        mainAxisAlignment  : MainAxisAlignment.center,
+        crossAxisAlignment : CrossAxisAlignment.center,
+
+        children: [
+          Icon(Icons.check_circle, color: Colors.white, size: 20,),
+          SizedBox(width: 5,),
+          Text('Contact added', style: TextStyle(color: Colors.white),),
+        ],
+      ),
+      action          : SnackBarAction(
+        label     : 'UNDO',
+        textColor : Colors.white,
+        onPressed : () { },
+      ),
+    );
+
+    final diff   = await callHelper.callAndGetDuration(dialledNumber);
+
+    BuildContext diallerContext = context;
+    showSnackBarFlow(snackBar, diallerContext, exists, formattedContactNumber);
   }
 
   @override
