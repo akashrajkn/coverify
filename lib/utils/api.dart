@@ -68,7 +68,7 @@ Future<dynamic> callFilterContactsEndpoint(LocationModel location, ResourceModel
   print(url);
 
   // return {
-  //   'request'  : 'forbidden',
+  //   'request'  : 'error',
   //   'contacts' : List<ContactModel>.from([]),
   // };
 

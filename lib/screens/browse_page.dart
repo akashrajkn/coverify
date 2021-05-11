@@ -35,6 +35,7 @@ class BrowsePageState extends State<BrowsePage> {
   bool isLoading         = true;
   bool isLazyLoading     = false;
   bool readyToDisplay    = false;
+  bool showErrorWidget   = false;
 
   Map<String, dynamic> contactsByFilter = {};
 
@@ -64,17 +65,24 @@ class BrowsePageState extends State<BrowsePage> {
 
   Future<void> getFilteredContactsForLocation(LocationModel whichLocation) async {
 
-    setState(() { isLoading = true; });
+    setState(() {
+      isLoading       = true;
+      currentLocation = whichLocation;
+    });
 
     var response                = await callFilterContactsEndpoint(whichLocation, currentResource, 0, widget.info['imei']);
     if (response['request'] == 'error') {
-      Navigator.of(context).pushReplacementNamed(errorRoute, arguments: response['error']);
+      // Navigator.of(context).pushReplacementNamed(errorRoute, arguments: response['error']);
+      setState(() {
+        showErrorWidget = true;
+        isLoading       = false;
+      });
+      return;
     }
 
     setState(() {
-      isLoading       = false;
-      contactsList    = response['contacts'];
-      currentLocation = whichLocation;
+      isLoading    = false;
+      contactsList = response['contacts'];
     });
   }
 
@@ -95,7 +103,10 @@ class BrowsePageState extends State<BrowsePage> {
   }
 
   Future refreshContacts() async {
-    setState(() { offset = 0; });
+    setState(() {
+      offset          = 0;
+      showErrorWidget = false;
+    });
     getFilteredContactsForLocation(currentLocation);
   }
 
@@ -205,7 +216,7 @@ class BrowsePageState extends State<BrowsePage> {
         isLoading ? Container(
           padding : EdgeInsets.fromLTRB(0, 20, 0, 0),
           child   : CircularProgressIndicator(),
-        ) : contactsList.length == 0 ? Expanded(
+        ) : showErrorWidget ? Container() : contactsList.length == 0 ? Expanded(
 
           child : ListView(
 
@@ -241,6 +252,38 @@ class BrowsePageState extends State<BrowsePage> {
                 },
               ),
             )
+          ),
+        ),
+        !showErrorWidget ? Container() : Expanded(
+          child: ListView(
+
+            children : [
+              SizedBox(height: 100,),
+              Icon(Icons.refresh_rounded, color: Colors.grey, size: 100,),
+              Container(
+                padding : EdgeInsets.fromLTRB(20, 20, 20, 10),
+                child   : Text('There was a problem getting contacts.', style: TextStyle(fontSize: 26, color: primaryColor), textAlign: TextAlign.center,),
+              ),
+              Container(
+                padding : EdgeInsets.fromLTRB(20, 10, 20, 0),
+                child   : SizedBox(
+                  width  : double.infinity,
+                  height : 45,
+
+                  child  : TextButton(
+                    style     : TextButton.styleFrom(
+                      primary         : Colors.white,
+                      backgroundColor : Colors.green,
+                      onSurface       : Colors.grey,
+                      side            : BorderSide(color: Colors.green, width: 0.5),
+                      padding         : EdgeInsets.fromLTRB(15, 0, 15, 0),
+                    ),
+                    onPressed : () { refreshContacts(); },
+                    child     : Text('Try again', style: TextStyle(fontSize: 19),),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ],
