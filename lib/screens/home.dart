@@ -41,21 +41,34 @@ class _HomeScreenState extends State<HomeScreen> {
 
     isInternetAvailable().then((available) {
       if (!available) {
-        Navigator.of(context).pushNamed(errorRoute, arguments: 'Internet not available');
-      }
-    });
 
-    getImei()
-    .then((_) {
-      getInitDataFromBackend()
-      .then((_) {
-        setHomeLocation().then((_) {
-          setState(() { });
+        final snackBar = SnackBar(
+          duration        : Duration(days: 365),
+          backgroundColor : Colors.orange,
+          content         : Row(
+            mainAxisAlignment  : MainAxisAlignment.center,
+            crossAxisAlignment : CrossAxisAlignment.center,
+
+            children           : [
+              Text('Please check your internet connection', style: TextStyle(color: Colors.white),)
+            ],
+          ),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      } else {
+        getImei()
+          .then((_) {
+          getInitDataFromBackend()
+            .then((_) {
+            setHomeLocation().then((_) {
+              setState(() { });
+            });
+          })
+          .onError((error, stackTrace) {
+            Navigator.of(context).pushNamed(errorRoute, arguments: error.toString());
+          });
         });
-      })
-      .onError((error, stackTrace) {
-        Navigator.of(context).pushNamed(errorRoute, arguments: error.toString());
-      });
+      }
     });
 
     super.initState();
