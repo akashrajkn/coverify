@@ -30,17 +30,21 @@ void showNameBottomSheet(BuildContext context, Function callback) {
                 color : Theme.of(context).canvasColor,
               ),
               child      : Column(
-                mainAxisAlignment  : MainAxisAlignment.start,
-                crossAxisAlignment : CrossAxisAlignment.start,
+                mainAxisAlignment   : MainAxisAlignment.start,
+                crossAxisAlignment  : CrossAxisAlignment.start,
 
-                children           : [
+                children            : [
                   TextField(
-                    decoration : InputDecoration(
-                      hintText   : 'Name ...',
-                    ),
-                    style      : TextStyle( fontSize : 18,),
-                    onChanged  : (text) {
-                      enteredName = text;
+                    autofocus       : true,
+                    decoration      : InputDecoration(hintText : 'Name ...',),
+                    style           : TextStyle( fontSize : 18,),
+                    onChanged       : (text) { enteredName = text; },
+                    textInputAction : TextInputAction.done,
+                    onSubmitted     : (text) {
+                      if (text.isNotEmpty) {
+                        Navigator.pop(context);
+                        callback(text);
+                      }
                     },
                   ),
                   SizedBox(height: 10,),
@@ -57,8 +61,10 @@ void showNameBottomSheet(BuildContext context, Function callback) {
                         padding         : EdgeInsets.fromLTRB(15, 0, 15, 0),
                       ),
                       onPressed : () {
-                        Navigator.pop(context);
-                        callback(enteredName);
+                        if (enteredName.isNotEmpty) {
+                          Navigator.pop(context);
+                          callback(enteredName);
+                        }
                       },
                       child     : Text('Add contact', style: TextStyle(fontSize: 19),),
                     ),
@@ -73,11 +79,3 @@ void showNameBottomSheet(BuildContext context, Function callback) {
     },
   );
 }
-
-// Column(
-// mainAxisAlignment  : MainAxisAlignment.start,
-// crossAxisAlignment : CrossAxisAlignment.start,
-// children           : <Widget>[
-//
-// ],
-// )

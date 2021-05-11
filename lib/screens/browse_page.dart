@@ -88,16 +88,12 @@ class BrowsePageState extends State<BrowsePage> {
 
   void filterChanged(String newFilter) {
 
-    if (newFilter == chosenFilter) {
-      // newFilter = '';
-      return;
-    }
+    if (newFilter == chosenFilter) { return; }
 
     setState(() {
       chosenFilter = newFilter;
       offset       = 0;
     });
-
     getFilteredContactsForLocation(currentLocation);
   }
 
@@ -212,6 +208,24 @@ class BrowsePageState extends State<BrowsePage> {
         isLoading ? Container(
           padding : EdgeInsets.fromLTRB(0, 20, 0, 0),
           child   : CircularProgressIndicator(),
+        ) : contactsList.length == 0 ? Expanded(
+
+          child : Column(
+            mainAxisAlignment  : MainAxisAlignment.center,
+            crossAxisAlignment : CrossAxisAlignment.center,
+
+            children           : [
+              Icon(Icons.block_rounded, color: Colors.grey, size: 100,),
+              Container(
+                padding : EdgeInsets.fromLTRB(20, 20, 20, 10),
+                child   : Text('No contacts available for $chosenFilter in ${widget.location.name}.', style: TextStyle(fontSize: 26), textAlign: TextAlign.center,),
+              ),
+              Container(
+                padding : EdgeInsets.fromLTRB(20, 10, 20, 0),
+                child   : Text('Please check back later.', style: TextStyle(fontSize: 26), textAlign: TextAlign.center,),
+              ),
+            ],
+          ),
         ) : Expanded(
 
           child: LazyLoadScrollView(

@@ -123,8 +123,7 @@ class _DialerState extends State<Dialer> {
       ),
     );
 
-    final diff   = await callHelper.callAndGetDuration(dialledNumber);
-
+    final diff                  = await callHelper.callAndGetDuration(dialledNumber);
     BuildContext diallerContext = context;
     showSnackBarFlow(snackBar, diallerContext, exists, formattedContactNumber);
   }

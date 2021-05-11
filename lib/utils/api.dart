@@ -12,8 +12,15 @@ Future<dynamic> callBootstrapEndpoint(String imei) async {
   String url = apiBootstrapURL;
   print(url);
 
+  // return {
+  //   'request'   : 'forbidden',
+  //   'locations' : List<LocationModel>.from([]),
+  //   'resources' : List<ResourceModel>.from([]),
+  //   'status'    : []
+  // };
+
   try {
-    var response = await http.get(Uri.parse(url), headers: {'x-imei' : imei});
+    var response = await http.get(Uri.parse(url), headers: { 'x-imei' : imei });
     if (response.statusCode == 403) {
       return {
         'request'   : 'forbidden',
@@ -59,6 +66,11 @@ Future<dynamic> callFilterContactsEndpoint(LocationModel location, ResourceModel
 
   String url = apiFilterContactsURL + '?location=${location.id}&requirement=${resource.id}&offset=$offset';
   print(url);
+
+  // return {
+  //   'request'  : 'forbidden',
+  //   'contacts' : List<ContactModel>.from([]),
+  // };
 
   try {
     var response = await http.get(Uri.parse(url), headers: {'x-imei' : imei});

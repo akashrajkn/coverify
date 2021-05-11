@@ -48,12 +48,12 @@ class _HomeScreenState extends State<HomeScreen> {
     getImei()
     .then((_) {
       getInitDataFromBackend()
-          .then((_) {
+      .then((_) {
         setHomeLocation().then((_) {
           setState(() { });
         });
       })
-          .onError((error, stackTrace) {
+      .onError((error, stackTrace) {
         Navigator.of(context).pushNamed(errorRoute, arguments: error.toString());
       });
     });
@@ -74,6 +74,8 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     print('here?');
+    print(response);
+    print("");
 
     response['locations'].insert(0, LocationModel(id: '', name: '')); // FIXME: This is just for compatibility, get rid of it at a later point
     setState(() {
