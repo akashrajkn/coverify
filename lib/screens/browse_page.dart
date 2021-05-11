@@ -30,7 +30,6 @@ class BrowsePageState extends State<BrowsePage> {
 
   LocationModel currentLocation;
   ResourceModel currentResource;
-  String chosenFilter    = '';
   int    offset          = 0;
   var contactsList       = [];
   bool isLoading         = true;
@@ -45,8 +44,8 @@ class BrowsePageState extends State<BrowsePage> {
   void initState() {
 
     if (widget.resources.length > 0 && widget.resources.length > 0) {
-      readyToDisplay = true;
-      chosenFilter   = widget.resources[0].id;
+      readyToDisplay  = true;
+      currentResource = widget.resources[0];
 
       if (widget.location != null && widget.location.id.isNotEmpty) {
         getFilteredContactsForLocation(widget.location);
@@ -67,8 +66,7 @@ class BrowsePageState extends State<BrowsePage> {
 
     setState(() { isLoading = true; });
 
-    ResourceModel whichResource = widget.resources.firstWhere((element) => element.id == chosenFilter, orElse: () { return null; });
-    var response                = await callFilterContactsEndpoint(whichLocation, whichResource, 0, widget.info['imei']);
+    var response                = await callFilterContactsEndpoint(whichLocation, currentResource, 0, widget.info['imei']);
     if (response['request'] == 'error') {
       Navigator.of(context).pushReplacementNamed(errorRoute, arguments: response['error']);
     }
@@ -77,7 +75,6 @@ class BrowsePageState extends State<BrowsePage> {
       isLoading       = false;
       contactsList    = response['contacts'];
       currentLocation = whichLocation;
-      currentResource = whichResource;
     });
   }
 
@@ -86,12 +83,12 @@ class BrowsePageState extends State<BrowsePage> {
     getFilteredContactsForLocation(newLocation);
   }
 
-  void filterChanged(String newFilter) {
+  void filterChanged(ResourceModel newFilter) {
 
-    if (newFilter == chosenFilter) { return; }
+    if (newFilter.id == currentResource.id) { return; }
 
     setState(() {
-      chosenFilter = newFilter;
+      currentResource = newFilter;
       offset       = 0;
     });
     getFilteredContactsForLocation(currentLocation);
@@ -150,12 +147,12 @@ class BrowsePageState extends State<BrowsePage> {
         .closed
         .then((value) {
           if (value == SnackBarClosedReason.timeout || value == SnackBarClosedReason.swipe) {
-            callReportContactURL(model.contactNumber, true, chosenFilter, feedback, '', '', widget.info['imei'])
+            callReportContactURL(model.contactNumber, true, currentResource.id, feedback, '', '', widget.info['imei'])
             .then((value) {
               print('report api response');
               print(value);
             });
-            insertRecordToDatabase(null, model, chosenFilter);
+            insertRecordToDatabase(null, model, currentResource.id);
           } else if (value == SnackBarClosedReason.action) {
             showSnackBarFlow(model);
           }
@@ -192,14 +189,14 @@ class BrowsePageState extends State<BrowsePage> {
                 padding : EdgeInsets.fromLTRB(0, 0, 10, 0),
                 child   : TextButton(
                   style     : TextButton.styleFrom(
-                    primary         : chosenFilter == widget.resources[index].id ? Colors.white : primaryColor,
-                    backgroundColor : chosenFilter == widget.resources[index].id ? primaryColor : Colors.white,
+                    primary         : currentResource.id == widget.resources[index].id ? Colors.white : primaryColor,
+                    backgroundColor : currentResource.id == widget.resources[index].id ? primaryColor : Colors.white,
                     onSurface       : Colors.grey,
                     side            : BorderSide(color: primaryColor, width: 0.5),
                     padding         : EdgeInsets.fromLTRB(15, 0, 15, 0),
                   ),
-                  onPressed : () { filterChanged(widget.resources[index].id); },
-                  child     : Text(widget.resources[index].name, style: TextStyle(fontWeight: chosenFilter == widget.resources[index].id ? FontWeight.bold : FontWeight.normal, fontSize: 13),)
+                  onPressed : () { filterChanged(widget.resources[index]); },
+                  child     : Text(widget.resources[index].name, style: TextStyle(fontWeight: currentResource.id == widget.resources[index].id ? FontWeight.bold : FontWeight.normal, fontSize: 13),)
                 ),
               );
             }),
@@ -210,19 +207,18 @@ class BrowsePageState extends State<BrowsePage> {
           child   : CircularProgressIndicator(),
         ) : contactsList.length == 0 ? Expanded(
 
-          child : Column(
-            mainAxisAlignment  : MainAxisAlignment.center,
-            crossAxisAlignment : CrossAxisAlignment.center,
+          child : ListView(
 
-            children           : [
+            children : [
+              SizedBox(height: 100,),
               Icon(Icons.block_rounded, color: Colors.grey, size: 100,),
               Container(
                 padding : EdgeInsets.fromLTRB(20, 20, 20, 10),
-                child   : Text('No contacts available for $chosenFilter in ${widget.location.name}.', style: TextStyle(fontSize: 26), textAlign: TextAlign.center,),
+                child   : Text('No contacts available for ${currentResource.name} in ${currentLocation.name}.', style: TextStyle(fontSize: 26, color: primaryColor), textAlign: TextAlign.center,),
               ),
               Container(
                 padding : EdgeInsets.fromLTRB(20, 10, 20, 0),
-                child   : Text('Please check back later.', style: TextStyle(fontSize: 26), textAlign: TextAlign.center,),
+                child   : Text('Please check back later.', style: TextStyle(fontSize: 26, color: primaryColor), textAlign: TextAlign.center,),
               ),
             ],
           ),
@@ -241,7 +237,7 @@ class BrowsePageState extends State<BrowsePage> {
                 shrinkWrap  : true,
                 itemCount   : contactsList.length,
                 itemBuilder : (context, index) {
-                  return contactCardWidget(contactsList[index], callNumberAndSaveFeedback, chosenFilter);
+                  return contactCardWidget(contactsList[index], callNumberAndSaveFeedback, currentResource.id);
                 },
               ),
             )
