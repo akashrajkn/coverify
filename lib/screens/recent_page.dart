@@ -19,11 +19,12 @@ class RecentPage extends StatefulWidget {
 
 class _RecentPageState extends State<RecentPage> {
 
-  bool isLoading         = true;
   var recentCalls;
   ResourceModel currentResource;
-  var recentCallsList    = [];
-  bool readyToDisplay    = false;
+  bool isLoading              = true;
+  var recentCallsList         = [];
+  var recentCallsListFiltered = [];
+  bool readyToDisplay         = false;
 
   @override
   void initState() {
@@ -46,19 +47,19 @@ class _RecentPageState extends State<RecentPage> {
     for (int i = 0; i < recentCalls.length; i++) {
 
       tempCalls.add(ContactModel(
-          name              : recentCalls[i]['name'],
-          contactNumber     : recentCalls[i]['contactNumber'],
-          lastActivity      : recentCalls[i]['calledTime'],
-          counts            : {
-            recentCalls[i]['category'] : {
-              'helpfulCount'      : recentCalls[i]['helpfulCount'],
-              'unresponsiveCount' : recentCalls[i]['unresponsiveCount'],
-              'outOfStockCount'   : recentCalls[i]['outOfStockCount'],
-              'invalidCount'      : recentCalls[i]['notWorkingCount'],
-            }
-          },
-          lastState         : recentCalls[i]['state'] ?? 'unknown',
-          resourceID        : recentCalls[i]['category'].split(',')
+        name              : recentCalls[i]['name'],
+        contactNumber     : recentCalls[i]['contactNumber'],
+        lastActivity      : recentCalls[i]['calledTime'],
+        counts            : {
+          recentCalls[i]['category'] : {
+            'helpfulCount'      : recentCalls[i]['helpfulCount'],
+            'unresponsiveCount' : recentCalls[i]['unresponsiveCount'],
+            'outOfStockCount'   : recentCalls[i]['outOfStockCount'],
+            'invalidCount'      : recentCalls[i]['notWorkingCount'],
+          }
+        },
+        lastState         : recentCalls[i]['state'] ?? 'unknown',
+        resourceID        : recentCalls[i]['category'].split(','),
       ));
     }
 
@@ -66,12 +67,23 @@ class _RecentPageState extends State<RecentPage> {
       isLoading       = false;
       recentCallsList = tempCalls;
     });
+
+    filterChanged(currentResource);
   }
 
   void filterChanged(ResourceModel newFilter) {
 
-    if (newFilter.id == currentResource.id) { return; }
-    setState(() { currentResource = newFilter; });
+    List<ContactModel> tempCalls = [];
+    for (int i = 0; i < recentCallsList.length; i++) {
+      if (recentCallsList[i].resourceID[0] == newFilter.id) {
+        tempCalls.add(recentCallsList[i]);
+      }
+    }
+
+    setState(() {
+      currentResource         = newFilter;
+      recentCallsListFiltered = tempCalls;
+    });
   }
 
   @override
@@ -112,7 +124,7 @@ class _RecentPageState extends State<RecentPage> {
           padding : EdgeInsets.fromLTRB(0, 20, 0, 0),
           child   : CircularProgressIndicator(),
         ) : Container(),
-        isLoading ? Container() : recentCallsList.length == 0 ? Expanded(
+        isLoading ? Container() : recentCallsListFiltered.length == 0 ? Expanded(
 
           child : ListView(
 
@@ -147,9 +159,9 @@ class _RecentPageState extends State<RecentPage> {
           child: ListView.builder(
             padding     : EdgeInsets.all(10),
             shrinkWrap  : true,
-            itemCount   : recentCallsList.length,
+            itemCount   : recentCallsListFiltered.length,
             itemBuilder : (context, index) {
-              return contactCardWidget(recentCallsList[index], (_) {}, currentResource.id);
+              return contactCardWidget(recentCallsListFiltered[index], (_) {}, currentResource.id);
             },
           ),
         ),
