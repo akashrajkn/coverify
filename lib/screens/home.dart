@@ -73,10 +73,6 @@ class _HomeScreenState extends State<HomeScreen> {
       Navigator.of(context).pushReplacementNamed(errorRoute, arguments: response['error']);
     }
 
-    print('here?');
-    print(response);
-    print("");
-
     response['locations'].insert(0, LocationModel(id: '', name: '')); // FIXME: This is just for compatibility, get rid of it at a later point
     setState(() {
       locationList  = response['locations'];
