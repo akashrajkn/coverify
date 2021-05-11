@@ -45,17 +45,18 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     });
 
-    getInitDataFromBackend()
+    getImei()
     .then((_) {
-      setHomeLocation().then((_) {
-        setState(() { });
+      getInitDataFromBackend()
+          .then((_) {
+        setHomeLocation().then((_) {
+          setState(() { });
+        });
+      })
+          .onError((error, stackTrace) {
+        Navigator.of(context).pushNamed(errorRoute, arguments: error.toString());
       });
-    })
-    .onError((error, stackTrace) {
-      Navigator.of(context).pushNamed(errorRoute, arguments: error.toString());
     });
-
-    getImei();
 
     super.initState();
   }
@@ -93,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         currentLocation = LocationModel(id: locID, name: loc);
         initApp         = false;
-        browsePage      = BrowsePage(key: browsePageKey, location: LocationModel(id: locID, name: loc), resources: resourcesList, info: {'imei': imei},);
+        browsePage      = BrowsePage(key: browsePageKey, location: LocationModel(id: locID, name: loc), resources: resourcesList, info: {'imei': imei },);
         dialerPage      = Dialer(locations: locationList, resources: resourcesList, info: {'imei': imei},);
         currentNavigationIndex = 0;
       });
@@ -111,8 +112,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (initApp) {
       setState(() {
-        browsePage = BrowsePage(key: browsePageKey, location: newLocation, resources: resourcesList,);
-        dialerPage = Dialer(locations: locationList, resources: resourcesList,);
+        browsePage = BrowsePage(key: browsePageKey, location: newLocation, resources: resourcesList, info: {'imei': imei },);
+        dialerPage = Dialer(locations: locationList, resources: resourcesList, info: {'imei': imei },);
         currentNavigationIndex = 0;
       });
     }
