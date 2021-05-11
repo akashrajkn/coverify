@@ -23,14 +23,17 @@ class _RecentPageState extends State<RecentPage> {
   var recentCalls;
   String chosenFilter    = '';
   var recentCallsList    = [];
+  bool readyToDisplay    = false;
 
   @override
   void initState() {
 
-    print(widget.resources);
+    if (widget.resources.length > 0) {
+      readyToDisplay = true;
+      chosenFilter   = widget.resources[0].id;
+      openDatabaseAndFetchRecords();
+    }
 
-    chosenFilter = widget.resources[0].id;
-    openDatabaseAndFetchRecords();
     super.initState();
   }
 
@@ -77,7 +80,7 @@ class _RecentPageState extends State<RecentPage> {
   @override
   Widget build(BuildContext context) {
 
-    return Column(
+    return !readyToDisplay ? Container() : Column(
       mainAxisAlignment : MainAxisAlignment.start,
 
       children          : <Widget>[

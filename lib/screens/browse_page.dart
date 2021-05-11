@@ -18,7 +18,8 @@ class BrowsePage extends StatefulWidget {
 
   final LocationModel location;
   final List<ResourceModel> resources;
-  BrowsePage({Key key, this.location, this.resources}) : super(key: key);
+  final Map<String, String> info;
+  BrowsePage({Key key, this.location, this.resources, this.info}) : super(key: key);
 
   @override
   BrowsePageState createState() => BrowsePageState();
@@ -34,6 +35,7 @@ class BrowsePageState extends State<BrowsePage> {
   var contactsList       = [];
   bool isLoading         = true;
   bool isLazyLoading     = false;
+  bool readyToDisplay    = false;
 
   Map<String, dynamic> contactsByFilter = {};
 
@@ -42,10 +44,13 @@ class BrowsePageState extends State<BrowsePage> {
   @override
   void initState() {
 
-    chosenFilter = widget.resources[0].id;
+    if (widget.resources.length > 0 && widget.resources.length > 0) {
+      readyToDisplay = true;
+      chosenFilter   = widget.resources[0].id;
 
-    if (widget.location != null && widget.location.id.isNotEmpty) {
-      getFilteredContactsForLocation(widget.location);
+      if (widget.location != null && widget.location.id.isNotEmpty) {
+        getFilteredContactsForLocation(widget.location);
+      }
     }
 
     super.initState();
@@ -63,7 +68,7 @@ class BrowsePageState extends State<BrowsePage> {
     setState(() { isLoading = true; });
 
     ResourceModel whichResource = widget.resources.firstWhere((element) => element.id == chosenFilter, orElse: () { return null; });
-    var response                = await callFilterContactsEndpoint(whichLocation, whichResource, 0);
+    var response                = await callFilterContactsEndpoint(whichLocation, whichResource, 0, widget.info['imei']);
     if (response['request'] == 'error') {
       Navigator.of(context).pushReplacementNamed(errorRoute, arguments: response['error']);
     }
@@ -106,7 +111,7 @@ class BrowsePageState extends State<BrowsePage> {
     setState(() { isLazyLoading = true; });
 
     int newOffset = offset + 1;
-    var response  = await callFilterContactsEndpoint(currentLocation, currentResource, newOffset);
+    var response  = await callFilterContactsEndpoint(currentLocation, currentResource, newOffset, widget.info['imei']);
     if (response['request'] == 'error') {
       Navigator.of(context).pushReplacementNamed(errorRoute, arguments: response['error']);
     }
@@ -149,7 +154,7 @@ class BrowsePageState extends State<BrowsePage> {
         .closed
         .then((value) {
           if (value == SnackBarClosedReason.timeout || value == SnackBarClosedReason.swipe) {
-            callReportContactURL(model.contactNumber, true, chosenFilter, feedback, '', '')
+            callReportContactURL(model.contactNumber, true, chosenFilter, feedback, '', '', widget.info['imei'])
             .then((value) {
               print('report api response');
               print(value);
@@ -173,7 +178,7 @@ class BrowsePageState extends State<BrowsePage> {
   @override
   Widget build(BuildContext context) {
 
-    return Column(
+    return !readyToDisplay ? Container() : Column(
       mainAxisAlignment : MainAxisAlignment.start,
 
       children          : <Widget>[

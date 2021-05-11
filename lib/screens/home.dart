@@ -67,10 +67,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> getInitDataFromBackend() async {
 
-    var response = await callBootstrapEndpoint();
+    var response = await callBootstrapEndpoint(imei);
     if (response['request'] == 'error') {
       Navigator.of(context).pushReplacementNamed(errorRoute, arguments: response['error']);
     }
+
+    print('here?');
 
     response['locations'].insert(0, LocationModel(id: '', name: '')); // FIXME: This is just for compatibility, get rid of it at a later point
     setState(() {
@@ -91,8 +93,8 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         currentLocation = LocationModel(id: locID, name: loc);
         initApp         = false;
-        browsePage      = BrowsePage(key: browsePageKey, location: LocationModel(id: locID, name: loc), resources: resourcesList,);
-        dialerPage      = Dialer(locations: locationList, resources: resourcesList,);
+        browsePage      = BrowsePage(key: browsePageKey, location: LocationModel(id: locID, name: loc), resources: resourcesList, info: {'imei': imei},);
+        dialerPage      = Dialer(locations: locationList, resources: resourcesList, info: {'imei': imei},);
         currentNavigationIndex = 0;
       });
       return;

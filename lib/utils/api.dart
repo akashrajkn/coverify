@@ -7,13 +7,21 @@ import 'package:coverify/models/contact.dart';
 import 'package:coverify/models/location.dart';
 import 'package:coverify/models/resource.dart';
 
-Future<dynamic> callBootstrapEndpoint() async {
+Future<dynamic> callBootstrapEndpoint(String imei) async {
 
   String url = apiBootstrapURL;
   print(url);
 
   try {
-    var response = await http.get(Uri.parse(url));
+    var response = await http.get(Uri.parse(url), headers: {'x-imei' : imei});
+    if (response.statusCode == 403) {
+      return {
+        'request'   : 'forbidden',
+        'locations' : List<LocationModel>.from([]),
+        'resources' : List<ResourceModel>.from([]),
+        'status'    : []
+      };
+    }
     final parsed = jsonDecode(response.body);
 
     List<LocationModel> locations = [];
@@ -47,13 +55,20 @@ Future<dynamic> callBootstrapEndpoint() async {
   }
 }
 
-Future<dynamic> callFilterContactsEndpoint(LocationModel location, ResourceModel resource, int offset) async {
+Future<dynamic> callFilterContactsEndpoint(LocationModel location, ResourceModel resource, int offset, String imei) async {
 
   String url = apiFilterContactsURL + '?location=${location.id}&requirement=${resource.id}&offset=$offset';
   print(url);
 
   try {
-    var response = await http.get(Uri.parse(url));
+    var response = await http.get(Uri.parse(url), headers: {'x-imei' : imei});
+    if (response.statusCode == 403) {
+      return {
+        'request'  : 'forbidden',
+        'contacts' : List<ContactModel>.from([]),
+      };
+    }
+
     final parsed = jsonDecode(response.body);
 
     List<ContactModel> contacts = [];
@@ -112,12 +127,19 @@ Future<dynamic> callFilterContactsEndpoint(LocationModel location, ResourceModel
   }
 }
 
-Future<dynamic> callContactStatusEndpoint(String phoneNumber) async {
+Future<dynamic> callContactStatusEndpoint(String phoneNumber, String imei) async {
   String url = apiContactStatusURL;
   print(url);
 
   try {
-    var response = await http.post(Uri.parse(url), body: {'phoneNumber' : phoneNumber});
+    var response = await http.post(Uri.parse(url), body: {'phoneNumber' : phoneNumber}, headers: {'x-imei' : imei});
+    if (response.statusCode == 403) {
+      return {
+        'request' : 'forbidden',
+        'exists'  : false,
+      };
+    }
+
     final parsed = jsonDecode(response.body);
     return {
       'request' : 'success',
@@ -137,7 +159,7 @@ Future<dynamic> callContactStatusEndpoint(String phoneNumber) async {
   }
 }
 
-Future<dynamic> callReportContactURL(String phoneNumber, bool exists, String resourceID, String status, String locationID, String name) async {
+Future<dynamic> callReportContactURL(String phoneNumber, bool exists, String resourceID, String status, String locationID, String name, String imei) async {
 
   String url         = apiReportContactURL;
   print(url);
@@ -153,7 +175,8 @@ Future<dynamic> callReportContactURL(String phoneNumber, bool exists, String res
   }
 
   try {
-    await http.post(Uri.parse(url), body: body);
+    var response = await http.post(Uri.parse(url), body: body, headers: {'x-imei' : imei});
+    if (response.statusCode == 403) { return { 'request' : 'forbidden' }; }
     return { 'request' : 'success' };
   } on Exception catch (_) {
     return {

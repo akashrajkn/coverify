@@ -18,7 +18,8 @@ class Dialer extends StatefulWidget {
 
   final List<LocationModel> locations;
   final List<ResourceModel> resources;
-  Dialer({this.locations, this.resources});
+  final Map<String, String> info;
+  Dialer({this.locations, this.resources, this.info});
 
   @override
   _DialerState createState() => _DialerState();
@@ -29,6 +30,16 @@ class _DialerState extends State<Dialer> {
 
   String dialledNumber  = '';
   CallHelper callHelper = CallHelper();
+  bool readyToDisplay = false;
+
+  @override
+  void initState() {
+    if (widget.locations.length > 0 && widget.resources.length > 0) {
+      readyToDisplay = true;
+    }
+
+    super.initState();
+  }
 
   void dialButtonTapped(String s) {
     setState(() { dialledNumber += s; });
@@ -59,7 +70,7 @@ class _DialerState extends State<Dialer> {
               .closed
               .then((value) {
                 if (value == SnackBarClosedReason.swipe || value == SnackBarClosedReason.timeout) {
-                  callReportContactURL(formattedContactNumber, exists, resourceID, feedback, location.id, contactName);
+                  callReportContactURL(formattedContactNumber, exists, resourceID, feedback, location.id, contactName, widget.info['imei']);
                 } else if (value == SnackBarClosedReason.action) {
                   showSnackBarFlow(snackBar, diallerContext, exists, formattedContactNumber);
                 }
@@ -72,7 +83,7 @@ class _DialerState extends State<Dialer> {
           .closed
           .then((value) {
             if (value == SnackBarClosedReason.swipe || value == SnackBarClosedReason.timeout) {
-              callReportContactURL(formattedContactNumber, exists, resourceID, feedback, '', '');
+              callReportContactURL(formattedContactNumber, exists, resourceID, feedback, '', '', widget.info['imei']);
             } else if (value == SnackBarClosedReason.action) {
               showSnackBarFlow(snackBar, diallerContext, exists, formattedContactNumber);
             }
@@ -85,7 +96,7 @@ class _DialerState extends State<Dialer> {
   Future<void> callButtonTapped() async {
 
     String formattedContactNumber = getFormattedContactNumber(dialledNumber);
-    var response = await callContactStatusEndpoint(formattedContactNumber);
+    var response = await callContactStatusEndpoint(formattedContactNumber, widget.info['imei']);
     bool exists  = false;
     if (response['request'] == 'success') {
       exists     = response['exists'];
@@ -174,7 +185,7 @@ class _DialerState extends State<Dialer> {
 
               children           : [
                 dialButton('0', dialButtonTapped),
-                callButton(callButtonTapped),
+                callButton(readyToDisplay ? callButtonTapped : () {}),
                 backButton(backButtonTapped),
               ],
             ),
