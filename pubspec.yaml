@@ -22,6 +22,8 @@ dependencies:
   sqflite: ^2.0.0+3
   http: ^0.13.3
   imei_plugin: ^1.2.0
+  contacts_service: ^0.6.1
+  permission_handler: ^7.1.0
 
 dev_dependencies:
   flutter_test:

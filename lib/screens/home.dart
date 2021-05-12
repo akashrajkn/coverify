@@ -7,6 +7,7 @@ import 'package:coverify/constants.dart';
 import 'package:coverify/models/location.dart';
 import 'package:coverify/screens/browse_page.dart';
 import 'package:coverify/screens/dialer_page.dart';
+import 'package:coverify/screens/phonebook_page.dart';
 import 'package:coverify/screens/recent_page.dart';
 import 'package:coverify/utils/api.dart';
 import 'package:coverify/utils/misc.dart';
@@ -22,9 +23,10 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
-  bool       initApp              = true;
-  BrowsePage browsePage;
-  Dialer     dialerPage;
+  BrowsePage    browsePage;
+  Dialer        dialerPage;
+  PhonebookPage phonebookPage;
+  bool initApp                    = true;
   int currentNavigationIndex      = -1;
   GlobalKey<BrowsePageState> browsePageKey = GlobalKey();
 
@@ -106,6 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
         currentLocation = LocationModel(id: locID, name: loc);
         initApp         = false;
         browsePage      = BrowsePage(key: browsePageKey, location: LocationModel(id: locID, name: loc), resources: resourcesList, info: {'imei': imei },);
+        phonebookPage   = PhonebookPage(locations: locationList, resources: resourcesList, info: {'imei': imei},);
         dialerPage      = Dialer(locations: locationList, resources: resourcesList, info: {'imei': imei},);
         currentNavigationIndex = 0;
       });
@@ -123,8 +126,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (initApp) {
       setState(() {
-        browsePage = BrowsePage(key: browsePageKey, location: newLocation, resources: resourcesList, info: {'imei': imei },);
-        dialerPage = Dialer(locations: locationList, resources: resourcesList, info: {'imei': imei },);
+        browsePage    = BrowsePage(key: browsePageKey, location: newLocation, resources: resourcesList, info: {'imei': imei },);
+        dialerPage    = Dialer(locations: locationList, resources: resourcesList, info: {'imei': imei },);
+        phonebookPage = PhonebookPage(locations: locationList, resources: resourcesList, info: {'imei': imei },);
         currentNavigationIndex = 0;
       });
     }
@@ -150,6 +154,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children : [
           browsePage,
           dialerPage,
+          phonebookPage,
           RecentPage(key: GlobalKey(), resources: resourcesList,)
         ],
       ),
@@ -159,6 +164,7 @@ class _HomeScreenState extends State<HomeScreen> {
         items        : [
           BottomNavigationBarItem(icon: Icon(Icons.person_search_rounded), label: 'Browse'),
           BottomNavigationBarItem(icon: Icon(Icons.dialpad_rounded),       label: 'Dial New'),
+          BottomNavigationBarItem(icon: Icon(Icons.contact_phone_rounded), label: 'Phonebook'),
           BottomNavigationBarItem(icon: Icon(Icons.av_timer_rounded),      label: 'Recent')
         ],
         onTap        : (int _index) {
