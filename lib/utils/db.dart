@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:coverify/models/contact_card.dart';
+import 'package:coverify/models/contact.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:intl/intl.dart';
@@ -55,7 +55,7 @@ Future<dynamic> fetchRecentCallsFromDatabase(Database db) async {
 }
 
 
-Future<void> insertRecordToDatabase(Database db, ContactCardModel model) async {
+Future<void> insertRecordToDatabase(Database db, ContactModel model, String filter) async {
 
   if (db == null) {
     db = await getCoverifyDatabase();
@@ -63,12 +63,12 @@ Future<void> insertRecordToDatabase(Database db, ContactCardModel model) async {
 
   String contactNumber  = model.contactNumber;
   String name           = model.name;
-  int helpfulCount      = model.helpfulCount;
-  int unresponsiveCount = model.unresponsiveCount;
-  int notWorkingCount   = model.notWorkingCount;
-  int outOfStockCount   = model.outOfStockCount;
-  String state          = model.state;
-  String category       = model.type.join(',').toString();
+  int helpfulCount      = model.counts[filter]['helpfulCount'];
+  int unresponsiveCount = model.counts[filter]['unresponsiveCount'];
+  int notWorkingCount   = model.counts[filter]['invalidCount'];
+  int outOfStockCount   = model.counts[filter]['outOfStockCount'];
+  String state          = model.lastState;
+  String category       = filter;
   DateFormat dateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
   String calledTime     = dateFormat.format(DateTime.now());
 

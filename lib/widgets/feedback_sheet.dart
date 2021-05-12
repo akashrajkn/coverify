@@ -27,7 +27,7 @@ void showFeedbackBottomSheet(BuildContext context, Function callback) {
                       child   : Text('Please mark the number as', style: TextStyle(color: Colors.grey),),
                     ),
                     ListTile(
-                      leading : Icon(Icons.thumb_up, color: Colors.green,),
+                      leading : Icon(Icons.thumb_up_rounded, color: Colors.green,),
                       title   : Text('helpful', style: TextStyle(color: Colors.green),),
                       onTap   : () {
                         Navigator.pop(context);
@@ -35,7 +35,7 @@ void showFeedbackBottomSheet(BuildContext context, Function callback) {
                       },
                     ),
                     ListTile(
-                      leading : Icon(Icons.phone_missed, color: Colors.red,),
+                      leading : Icon(Icons.phone_missed_rounded, color: Colors.red,),
                       title   : Text('unresponsive', style: TextStyle(color: Colors.red),),
                       onTap   : () {
                         Navigator.pop(context);
@@ -43,19 +43,27 @@ void showFeedbackBottomSheet(BuildContext context, Function callback) {
                       },
                     ),
                     ListTile(
-                      leading : Icon(Icons.shopping_cart_outlined, color: Colors.orange,),
+                      leading : Icon(Icons.remove_shopping_cart_rounded, color: Colors.orange,),
                       title   : Text('out of stock', style: TextStyle(color: Colors.orange),),
                       onTap   : () {
                         Navigator.pop(context);
-                        callback('out_of_stock');
+                        callback('out of stock');
                       },
                     ),
                     ListTile(
-                      leading : Icon(Icons.block, color: Colors.black,),
-                      title   : Text('invalid', style: TextStyle(color: Colors.black),),
+                      leading : Icon(Icons.block_rounded, color: Colors.grey,),
+                      title   : Text('invalid', style: TextStyle(color: Colors.grey),),
                       onTap   : () {
                         Navigator.pop(context);
-                        callback('not_working');
+                        callback('invalid');
+                      },
+                    ),
+                    ListTile(
+                      leading : Icon(Icons.warning_amber_rounded, color: Colors.black,),
+                      title   : Text('Report', style: TextStyle(color: Colors.black),),
+                      onTap: () {
+                        Navigator.of(context);
+                        callback('report');
                       },
                     ),
                   ],

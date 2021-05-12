@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
 import 'package:coverify/constants.dart';
+import 'package:coverify/models/location.dart';
 import 'package:coverify/theme.dart';
 
 
-Widget appBarCommon(String location, Function callback, bool showLocation) {
+Widget appBarCommon(LocationModel location, Function callback, bool showLocation) {
 
   return AppBar(
     elevation                 : 0,
@@ -41,7 +42,7 @@ Widget appBarCommon(String location, Function callback, bool showLocation) {
             children           : [
               Icon(Icons.location_on, color: Colors.grey, size : 20),
               Text(
-                location,
+                location.name,
                 style: TextStyle(color: primaryColorMaterial[500]),
               )
             ],

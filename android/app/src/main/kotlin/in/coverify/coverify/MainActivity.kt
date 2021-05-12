@@ -1,4 +1,4 @@
-package com.akashrajkn.coverify
+package `in`.coverify.coverify
 
 import io.flutter.embedding.android.FlutterActivity
 

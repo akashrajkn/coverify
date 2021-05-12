@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 
+import 'package:coverify/models/location.dart';
 
-void showLocationBottomSheet(BuildContext context, dynamic locationList, Function callback) {
+
+Future<void> showLocationBottomSheet(BuildContext context, List<LocationModel> locationList, Function callback) async {
 
   showModalBottomSheet(
-    context : context,
-    builder : (context) {
+    isDismissible : false,
+    context       : context,
+    builder       : (context) {
 
       return Container(
         color : Color(0xff737373),
@@ -29,11 +32,10 @@ void showLocationBottomSheet(BuildContext context, dynamic locationList, Functio
               }
 
               return ListTile(
-                title   : Text(locationList[index]),
+                title   : Text(locationList[index].name),
                 onTap   : () {
-                  print(locationList[index]);
-                  callback(locationList[index]);
                   Navigator.pop(context);
+                  callback(locationList[index]);
                 },
               );
             },
