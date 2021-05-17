@@ -1,4 +1,5 @@
 import 'package:coverify/screens/error.dart';
+import 'package:coverify/screens/onboarding.dart';
 import 'package:flutter/material.dart';
 
 import 'package:coverify/constants.dart';
@@ -15,6 +16,9 @@ class Router {
 
       case homeRoute:
         return MaterialPageRoute(builder: (_) => HomeScreen());
+        
+      case onBoardingRoute:
+        return MaterialPageRoute(builder: (_) => OnBoardingScreen());
 
       case errorRoute:
         String args = settings.arguments as String;
