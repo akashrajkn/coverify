@@ -1,3 +1,4 @@
+import 'package:coverify/widgets/more_sheet.dart';
 import 'package:flutter/material.dart';
 
 import 'package:imei_plugin/imei_plugin.dart';
@@ -142,19 +143,22 @@ class _HomeScreenState extends State<HomeScreen> {
       browsePageKey.currentState.locationUpdated(newLocation);
     }
   }
+  
+  Future<void> moreInfoBottomSheet() async {
+    showMoreBottomSheet(context);
+  }
 
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
       backgroundColor : Colors.white,
-      appBar          : appBarCommon(currentLocation, () { showLocationBottomSheet(context, locationList, locationChanged); }, !initApp && currentNavigationIndex == 0),
+      appBar          : appBarCommon(currentLocation, () { showLocationBottomSheet(context, locationList, locationChanged); }, !initApp, moreInfoBottomSheet),
       body            : initApp || (currentNavigationIndex == -1) ? Container() : IndexedStack(
         index    : currentNavigationIndex,
         children : [
           browsePage,
           dialerPage,
-          phonebookPage,
           RecentPage(key: GlobalKey(), resources: resourcesList,)
         ],
       ),
@@ -163,8 +167,7 @@ class _HomeScreenState extends State<HomeScreen> {
         currentIndex : currentNavigationIndex,
         items        : [
           BottomNavigationBarItem(icon: Icon(Icons.person_search_rounded), label: 'Browse'),
-          BottomNavigationBarItem(icon: Icon(Icons.dialpad_rounded),       label: 'Dial New'),
-          BottomNavigationBarItem(icon: Icon(Icons.contact_phone_rounded), label: 'Phonebook'),
+          BottomNavigationBarItem(icon: Icon(Icons.dialpad_rounded),       label: 'Phone'),
           BottomNavigationBarItem(icon: Icon(Icons.av_timer_rounded),      label: 'Recent')
         ],
         onTap        : (int _index) {

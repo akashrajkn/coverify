@@ -77,29 +77,29 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
               Container(
                 padding : EdgeInsets.fromLTRB(30, 5, 30, 5),
                 child   : RichText(
-                  text: TextSpan(
-                    children: <TextSpan>[
+                  text : TextSpan(
+                    children : <TextSpan>[
                       TextSpan(
-                        style: TextStyle(color: Colors.black87),
-                        text: 'By continuing I agree to Coverify\'s ',
+                        style : TextStyle(color: Colors.black87),
+                        text  : 'By continuing I agree to Coverify\'s ',
                       ),
                       TextSpan(
-                        style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline,),
-                        text: 'Privacy Policy',
-                        recognizer: TapGestureRecognizer()..onTap = () async {
+                        style      : TextStyle(color: Colors.blue, decoration: TextDecoration.underline,),
+                        text       : 'Privacy Policy',
+                        recognizer : TapGestureRecognizer()..onTap = () async {
                           if (await canLaunch(privacyPolicyURL)) {
                             await launch(privacyPolicyURL);
                           }
                         },
                       ),
                       TextSpan(
-                        style: TextStyle(color: Colors.black87),
-                        text: ' and ',
+                        style : TextStyle(color: Colors.black87),
+                        text  : ' and ',
                       ),
                       TextSpan(
-                        style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline,),
-                        text: 'Terms & Conditions',
-                        recognizer: TapGestureRecognizer()..onTap = () async {
+                        style      : TextStyle(color: Colors.blue, decoration: TextDecoration.underline,),
+                        text       : 'Terms & Conditions',
+                        recognizer : TapGestureRecognizer()..onTap = () async {
                           if (await canLaunch(termsAndConditionsURL)) {
                             await launch(termsAndConditionsURL);
                           }

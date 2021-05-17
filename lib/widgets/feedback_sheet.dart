@@ -51,15 +51,15 @@ void showFeedbackBottomSheet(BuildContext context, Function callback) {
                       },
                     ),
                     ListTile(
-                      leading : Icon(Icons.block_rounded, color: Colors.grey,),
-                      title   : Text('invalid', style: TextStyle(color: Colors.grey),),
+                      leading : Icon(Icons.block_rounded, color: Colors.blue,),
+                      title   : Text('invalid', style: TextStyle(color: Colors.blue),),
                       onTap   : () {
                         Navigator.pop(context);
                         callback('invalid');
                       },
                     ),
                     ListTile(
-                      leading : Icon(Icons.warning_amber_rounded, color: Colors.black,),
+                      leading : Icon(Icons.flag_rounded, color: Colors.black,),
                       title   : Text('Report', style: TextStyle(color: Colors.black),),
                       onTap: () {
                         Navigator.of(context);

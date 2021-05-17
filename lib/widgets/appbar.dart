@@ -5,7 +5,7 @@ import 'package:coverify/models/location.dart';
 import 'package:coverify/theme.dart';
 
 
-Widget appBarCommon(LocationModel location, Function callback, bool showLocation) {
+Widget appBarCommon(LocationModel location, Function callback, bool showLocation, Function showMoreSheet) {
 
   return AppBar(
     elevation                 : 0,
@@ -20,7 +20,7 @@ Widget appBarCommon(LocationModel location, Function callback, bool showLocation
         Padding(
           padding : EdgeInsets.fromLTRB(10, 0, 10, 0),
 
-          child   : Image.asset(withoutNameLogoPath, height: 30,),
+          child   : Image.asset(withoutNameLogoPath, height: 35,),
         ),
         Text(
           'coverify',
@@ -32,7 +32,7 @@ Widget appBarCommon(LocationModel location, Function callback, bool showLocation
       !showLocation ? Container() : InkWell(
 
         child : Padding(
-          padding : EdgeInsets.fromLTRB(10, 0, 25, 0),
+          padding : EdgeInsets.fromLTRB(10, 0, 10, 0),
 
           child   : Row(
             mainAxisSize       : MainAxisSize.min,
@@ -49,6 +49,13 @@ Widget appBarCommon(LocationModel location, Function callback, bool showLocation
           )
         ),
         onTap : () { callback(); },
+      ),
+      InkWell(
+        child: Padding(
+          padding : EdgeInsets.fromLTRB(10, 0, 15, 0),
+          child   : Icon(Icons.more_vert_rounded, color: Colors.grey),
+        ),
+        onTap   : () { showMoreSheet(); }
       ),
     ],
   );
