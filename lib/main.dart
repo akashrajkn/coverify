@@ -12,7 +12,7 @@ Future<void> main() async {
 
   await checkAndCreateDatabase();
 
-  var infoStartup = { 'show_terms' : true };
+  var infoStartup = { 'show_terms' : false };
   runApp(CoVerify(infoStartup));
 }
 

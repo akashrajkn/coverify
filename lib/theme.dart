@@ -23,7 +23,7 @@ Map<String, Color> feedbackColors = {
   'helpful'      : Colors.green,
   'unresponsive' : Colors.red,
   'out of stock' : Colors.orange,
-  'invalid'      : Colors.black,
+  'invalid'      : Colors.blue,
   'unknown'      : Colors.grey,
 };
 
