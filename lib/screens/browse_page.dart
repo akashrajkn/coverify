@@ -1,3 +1,4 @@
+import 'package:coverify/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
 
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
@@ -44,6 +45,14 @@ class BrowsePageState extends State<BrowsePage> {
 
   @override
   void initState() {
+    
+    widget.tabController.addListener(() {
+      if (widget.tabController.indexIsChanging) {
+        print('index changing');
+      } else {
+        filterChanged(widget.resources[widget.tabController.index]);
+      }
+    });
 
     if (widget.resources.length > 0 && widget.resources.length > 0) {
       readyToDisplay  = true;
@@ -135,26 +144,7 @@ class BrowsePageState extends State<BrowsePage> {
       context,
       (feedback) {
         print(feedback);
-
-        final snackBar = SnackBar(
-          duration        : Duration(seconds: 2),
-          backgroundColor : feedbackColors[feedback],
-          content         : Row(
-            mainAxisAlignment  : MainAxisAlignment.center,
-            crossAxisAlignment : CrossAxisAlignment.center,
-
-            children           : [
-              Icon(feedbackIconData[feedback], color: Colors.white, size: 20,),
-              SizedBox(width: 5,),
-              Text('Number marked as: $feedback', style: TextStyle(color: Colors.white),)
-            ],
-          ),
-          action          : SnackBarAction(
-            label     : 'UNDO',
-            textColor : Colors.white,
-            onPressed : () { },
-          ),
-        );
+        final snackBar = numberReportSnackBar(feedback);
         ScaffoldMessenger.of(context).showSnackBar(snackBar)
         .closed
         .then((value) {
@@ -187,36 +177,12 @@ class BrowsePageState extends State<BrowsePage> {
       mainAxisAlignment : MainAxisAlignment.start,
 
       children          : <Widget>[
-        Text('Each contact is updated with the most recent status'),
-        SizedBox(height: 20,),
-        SingleChildScrollView(
-          padding: EdgeInsets.fromLTRB(30, 0, 20, 0),
-          scrollDirection : Axis.horizontal,
-          child           : Row(
-            crossAxisAlignment : CrossAxisAlignment.center,
-            mainAxisAlignment  : MainAxisAlignment.start,
-            children           : List<Widget>.generate(widget.resources.length, (index) {
-
-              return Container(
-                padding : EdgeInsets.fromLTRB(0, 0, 10, 0),
-                child   : TextButton(
-                  style     : TextButton.styleFrom(
-                    primary         : currentResource.id == widget.resources[index].id ? Colors.white : primaryColor,
-                    backgroundColor : currentResource.id == widget.resources[index].id ? primaryColor : Colors.white,
-                    onSurface       : Colors.grey,
-                    side            : BorderSide(color: primaryColor, width: 0.5),
-                    padding         : EdgeInsets.fromLTRB(15, 0, 15, 0),
-                  ),
-                  onPressed : () { filterChanged(widget.resources[index]); },
-                  child     : Text(widget.resources[index].name, style: TextStyle(fontWeight: currentResource.id == widget.resources[index].id ? FontWeight.bold : FontWeight.normal, fontSize: 13),)
-                ),
-              );
-            }),
-          ),
-        ),
         isLoading ? Container(
-          padding : EdgeInsets.fromLTRB(0, 20, 0, 0),
-          child   : CircularProgressIndicator(),
+          padding : EdgeInsets.fromLTRB(0, 200, 0, 0),
+          child   : CircularProgressIndicator(
+            backgroundColor : Colors.green,
+            valueColor      : AlwaysStoppedAnimation<Color>(Colors.white),
+          ),
         ) : showErrorWidget ? Container() : contactsList.length == 0 ? Expanded(
 
           child : ListView(
@@ -242,7 +208,7 @@ class BrowsePageState extends State<BrowsePage> {
             scrollOffset    : 100,
             child           : RefreshIndicator(
               onRefresh       : refreshContacts,
-              backgroundColor : primaryColor,
+              backgroundColor : Colors.green,
               color           : Colors.white,
               child           : ListView.builder(
                 padding     : EdgeInsets.all(10),

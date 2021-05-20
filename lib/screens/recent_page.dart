@@ -30,6 +30,14 @@ class _RecentPageState extends State<RecentPage> {
   @override
   void initState() {
 
+    widget.tabController.addListener(() {
+      if (widget.tabController.indexIsChanging) {
+        print('index changing');
+      } else {
+        filterChanged(widget.resources[widget.tabController.index]);
+      }
+    });
+
     if (widget.resources.length > 0) {
       readyToDisplay  = true;
       currentResource = widget.resources[0];
@@ -37,6 +45,13 @@ class _RecentPageState extends State<RecentPage> {
     }
 
     super.initState();
+  }
+
+  @override
+  void setState(fn) {
+    if(mounted) {
+      super.setState(fn);
+    }
   }
 
   Future<void> openDatabaseAndFetchRecords() async {
@@ -94,33 +109,6 @@ class _RecentPageState extends State<RecentPage> {
       mainAxisAlignment : MainAxisAlignment.start,
 
       children          : <Widget>[
-        Text(''),
-        SizedBox(height: 20,),
-        SingleChildScrollView(
-          padding: EdgeInsets.fromLTRB(30, 0, 20, 0),
-          scrollDirection : Axis.horizontal,
-          child           : Row(
-            crossAxisAlignment : CrossAxisAlignment.center,
-            mainAxisAlignment  : MainAxisAlignment.start,
-            children           : List<Widget>.generate(widget.resources.length, (index) {
-
-              return Container(
-                padding : EdgeInsets.fromLTRB(0, 0, 10, 0),
-                child   : TextButton(
-                  style     : TextButton.styleFrom(
-                    primary         : currentResource.id == widget.resources[index].id ? Colors.white : primaryColor,
-                    backgroundColor : currentResource.id == widget.resources[index].id ? primaryColor : Colors.white,
-                    onSurface       : Colors.grey,
-                    side            : BorderSide(color: primaryColor, width: 0.5),
-                    padding         : EdgeInsets.fromLTRB(15, 0, 15, 0),
-                  ),
-                  onPressed : () { filterChanged(widget.resources[index]); },
-                  child     : Text(widget.resources[index].name, style: TextStyle(fontWeight: currentResource.id == widget.resources[index].id ? FontWeight.bold : FontWeight.normal, fontSize: 13),),
-                ),
-              );
-            }),
-          ),
-        ),
         isLoading ? Container(
           padding : EdgeInsets.fromLTRB(0, 20, 0, 0),
           child   : CircularProgressIndicator(),
