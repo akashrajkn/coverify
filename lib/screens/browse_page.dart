@@ -1,3 +1,4 @@
+import 'package:coverify/widgets/report_sheet.dart';
 import 'package:coverify/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
 
@@ -80,9 +81,8 @@ class BrowsePageState extends State<BrowsePage> {
       currentLocation = whichLocation;
     });
 
-    var response                = await callFilterContactsEndpoint(whichLocation, currentResource, 0, widget.info['imei']);
+    var response = await callFilterContactsEndpoint(whichLocation, currentResource, 0, widget.info['imei']);
     if (response['request'] == 'error') {
-      // Navigator.of(context).pushReplacementNamed(errorRoute, arguments: response['error']);
       setState(() {
         showErrorWidget = true;
         isLoading       = false;
@@ -139,26 +139,38 @@ class BrowsePageState extends State<BrowsePage> {
     print('DONE LOADING NEW STUFF');
   }
 
+  void showSnackBarAndCallReportAPI(String feedback, ContactModel model) {
+    final snackBar = numberReportSnackBar(feedback);
+    ScaffoldMessenger.of(context).showSnackBar(snackBar)
+        .closed
+        .then((value) {
+      if (value == SnackBarClosedReason.timeout || value == SnackBarClosedReason.swipe) {
+        callReportContactURL(model.contactNumber, true, currentResource.id, feedback, '', '', widget.info['imei'])
+        .then((value) {
+          print('report api response');
+          print(value);
+        });
+        insertRecordToDatabase(null, model, currentResource.id);
+      } else if (value == SnackBarClosedReason.action) {
+        showSnackBarFlow(model);
+      }
+    });
+  }
+
   void showSnackBarFlow(ContactModel model) {
     showFeedbackBottomSheet(
       context,
       (feedback) {
         print(feedback);
-        final snackBar = numberReportSnackBar(feedback);
-        ScaffoldMessenger.of(context).showSnackBar(snackBar)
-        .closed
-        .then((value) {
-          if (value == SnackBarClosedReason.timeout || value == SnackBarClosedReason.swipe) {
-            callReportContactURL(model.contactNumber, true, currentResource.id, feedback, '', '', widget.info['imei'])
-            .then((value) {
-              print('report api response');
-              print(value);
-            });
-            insertRecordToDatabase(null, model, currentResource.id);
-          } else if (value == SnackBarClosedReason.action) {
-            showSnackBarFlow(model);
-          }
-        });
+
+        // TODO: Weird flow - fix it
+        if (feedback == 'report') {
+          showReportBottomSheet(context, currentLocation, currentResource, model, () {
+            showSnackBarAndCallReportAPI(feedback, model);
+          });
+        } else {
+          showSnackBarAndCallReportAPI(feedback, model);
+        }
       },
     );
   }

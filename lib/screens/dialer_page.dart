@@ -158,7 +158,6 @@ class _DialerState extends State<Dialer> {
 
               children           : [
                 Container(
-
                   child: Text(displayDialledNumber(dialledNumber), style: TextStyle(fontSize: 30, color: primaryColor),),
                 ),
                 SizedBox(height: 50,),

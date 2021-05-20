@@ -62,7 +62,7 @@ void showFeedbackBottomSheet(BuildContext context, Function callback) {
                       leading : Icon(Icons.flag_rounded, color: Colors.black,),
                       title   : Text('Report', style: TextStyle(color: Colors.black),),
                       onTap: () {
-                        Navigator.of(context);
+                        Navigator.pop(context);
                         callback('report');
                       },
                     ),
