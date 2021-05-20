@@ -19,7 +19,8 @@ class BrowsePage extends StatefulWidget {
   final LocationModel location;
   final List<ResourceModel> resources;
   final Map<String, String> info;
-  BrowsePage({Key key, this.location, this.resources, this.info}) : super(key: key);
+  final TabController tabController;
+  BrowsePage({Key key, this.location, this.resources, this.info, this.tabController}) : super(key: key);
 
   @override
   BrowsePageState createState() => BrowsePageState();
@@ -225,11 +226,11 @@ class BrowsePageState extends State<BrowsePage> {
               Icon(Icons.block_rounded, color: Colors.grey, size: 100,),
               Container(
                 padding : EdgeInsets.fromLTRB(20, 20, 20, 10),
-                child   : Text('No contacts available for ${currentResource.name} in ${currentLocation.name}.', style: TextStyle(fontSize: 26, color: primaryColor), textAlign: TextAlign.center,),
+                child   : Text('No contacts available for ${currentResource.name} in ${currentLocation.name}.', style: TextStyle(fontSize: 20, color: primaryColor), textAlign: TextAlign.center,),
               ),
               Container(
                 padding : EdgeInsets.fromLTRB(20, 10, 20, 0),
-                child   : Text('Please check back later.', style: TextStyle(fontSize: 26, color: primaryColor), textAlign: TextAlign.center,),
+                child   : Text('Please check back later.', style: TextStyle(fontSize: 20, color: primaryColor), textAlign: TextAlign.center,),
               ),
             ],
           ),
@@ -262,7 +263,7 @@ class BrowsePageState extends State<BrowsePage> {
               Icon(Icons.refresh_rounded, color: Colors.grey, size: 100,),
               Container(
                 padding : EdgeInsets.fromLTRB(20, 20, 20, 10),
-                child   : Text('There was a problem getting contacts.', style: TextStyle(fontSize: 26, color: primaryColor), textAlign: TextAlign.center,),
+                child   : Text('There was a problem getting contacts.', style: TextStyle(fontSize: 20, color: primaryColor), textAlign: TextAlign.center,),
               ),
               Container(
                 padding : EdgeInsets.fromLTRB(20, 10, 20, 0),

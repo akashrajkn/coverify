@@ -19,3 +19,7 @@ const String apiReportContactURL    = apiBaseURL + '/v1/api/contact/report';
 const String termsAndConditionsURL  = 'https://drive.google.com/file/d/1TIkVi75ZblCb-pzeJ7A1dQ5yKRI-r9KM/view?usp=sharing';
 const String privacyPolicyURL       = 'https://drive.google.com/file/d/1nXvyu9T7fVEiUPBLIHIE81qFToiM8tzQ/view?usp=sharing';
 
+
+// Strings
+const String browsePageAppBarText   = 'Each contact is updated with the most recent status';
+const String recentPageAppBarText   = 'Numbers you dialled through coverify';

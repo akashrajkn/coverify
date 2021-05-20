@@ -1,4 +1,5 @@
 import 'package:coverify/models/location.dart';
+import 'package:coverify/screens/phonebook_page.dart';
 import 'package:coverify/utils/api.dart';
 import 'package:coverify/utils/misc.dart';
 import 'package:coverify/widgets/location_sheet.dart';
@@ -19,7 +20,8 @@ class Dialer extends StatefulWidget {
   final List<LocationModel> locations;
   final List<ResourceModel> resources;
   final Map<String, String> info;
-  Dialer({this.locations, this.resources, this.info});
+  final TabController tabController;
+  Dialer({this.locations, this.resources, this.info, this.tabController});
 
   @override
   _DialerState createState() => _DialerState();
@@ -37,6 +39,17 @@ class _DialerState extends State<Dialer> {
     if (widget.locations.length > 0 && widget.resources.length > 0) {
       readyToDisplay = true;
     }
+
+    widget.tabController.addListener(() {
+
+      if (widget.tabController.indexIsChanging) {
+        print('wait');
+      } else {
+        print(readyToDisplay);
+        print(widget.tabController.index);
+      }
+    });
+
 
     super.initState();
   }
@@ -131,66 +144,73 @@ class _DialerState extends State<Dialer> {
   @override
   Widget build(BuildContext context) {
 
-    return Center(
+    // print(widget.tabController.index);
 
-      child: SingleChildScrollView(
+    return TabBarView(
+      controller : widget.tabController,
+      children   : [
+        Center(
+          child: SingleChildScrollView(
 
-        child: Column(
-          mainAxisAlignment  : MainAxisAlignment.center,
-          crossAxisAlignment : CrossAxisAlignment.center,
-
-          children           : [
-            Container(
-
-              child: Text(displayDialledNumber(dialledNumber), style: TextStyle(fontSize: 30, color: primaryColor),),
-            ),
-            SizedBox(height: 50,),
-            Row(
+            child: Column(
               mainAxisAlignment  : MainAxisAlignment.center,
               crossAxisAlignment : CrossAxisAlignment.center,
 
               children           : [
-                dialButton('1', dialButtonTapped),
-                dialButton('2', dialButtonTapped),
-                dialButton('3', dialButtonTapped)
-              ],
-            ),
-            SizedBox(height: 25,),
-            Row(
-              mainAxisAlignment  : MainAxisAlignment.center,
-              crossAxisAlignment : CrossAxisAlignment.center,
+                Container(
 
-              children           : [
-                dialButton('4', dialButtonTapped),
-                dialButton('5', dialButtonTapped),
-                dialButton('6', dialButtonTapped)
-              ],
-            ),
-            SizedBox(height: 25,),
-            Row(
-              mainAxisAlignment  : MainAxisAlignment.center,
-              crossAxisAlignment : CrossAxisAlignment.center,
+                  child: Text(displayDialledNumber(dialledNumber), style: TextStyle(fontSize: 30, color: primaryColor),),
+                ),
+                SizedBox(height: 50,),
+                Row(
+                  mainAxisAlignment  : MainAxisAlignment.center,
+                  crossAxisAlignment : CrossAxisAlignment.center,
 
-              children           : [
-                dialButton('7', dialButtonTapped),
-                dialButton('8', dialButtonTapped),
-                dialButton('9', dialButtonTapped)
-              ],
-            ),
-            SizedBox(height: 25,),
-            Row(
-              mainAxisAlignment  : MainAxisAlignment.center,
-              crossAxisAlignment : CrossAxisAlignment.center,
+                  children           : [
+                    dialButton('1', dialButtonTapped),
+                    dialButton('2', dialButtonTapped),
+                    dialButton('3', dialButtonTapped)
+                  ],
+                ),
+                SizedBox(height: 25,),
+                Row(
+                  mainAxisAlignment  : MainAxisAlignment.center,
+                  crossAxisAlignment : CrossAxisAlignment.center,
 
-              children           : [
-                dialButton('0', dialButtonTapped),
-                callButton(readyToDisplay ? callButtonTapped : () {}),
-                backButton(backButtonTapped),
+                  children           : [
+                    dialButton('4', dialButtonTapped),
+                    dialButton('5', dialButtonTapped),
+                    dialButton('6', dialButtonTapped)
+                  ],
+                ),
+                SizedBox(height: 25,),
+                Row(
+                  mainAxisAlignment  : MainAxisAlignment.center,
+                  crossAxisAlignment : CrossAxisAlignment.center,
+
+                  children           : [
+                    dialButton('7', dialButtonTapped),
+                    dialButton('8', dialButtonTapped),
+                    dialButton('9', dialButtonTapped)
+                  ],
+                ),
+                SizedBox(height: 25,),
+                Row(
+                  mainAxisAlignment  : MainAxisAlignment.center,
+                  crossAxisAlignment : CrossAxisAlignment.center,
+
+                  children           : [
+                    dialButton('0', dialButtonTapped),
+                    callButton(readyToDisplay ? callButtonTapped : () {}),
+                    backButton(backButtonTapped),
+                  ],
+                ),
               ],
             ),
-          ],
+          ),
         ),
-      ),
+        PhonebookPage(),
+      ]
     );
   }
 }
