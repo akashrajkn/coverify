@@ -157,6 +157,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       currentLocation = newLocation;
     });
 
+    print(browsePageKey);
+
     if (browsePageKey.currentState != null) {
       browsePageKey.currentState.locationUpdated(newLocation);
     }
