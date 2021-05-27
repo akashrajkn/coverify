@@ -12,7 +12,7 @@ Future<void> main() async {
 
   await checkAndCreateDatabase();
 
-  var infoStartup = { };
+  var infoStartup = { 'show_terms' : false };
   runApp(CoVerify(infoStartup));
 }
 
@@ -28,7 +28,7 @@ class CoVerify extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title           : 'CoVerify',
       theme           : ThemeData(primarySwatch: primaryColorMaterial,),
-      initialRoute    : homeRoute,
+      initialRoute    : infoStartup['show_terms'] ? onBoardingRoute : homeRoute,
       onGenerateRoute : router.Router.generateRoute,
     );
   }

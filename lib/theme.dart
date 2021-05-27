@@ -23,7 +23,8 @@ Map<String, Color> feedbackColors = {
   'helpful'      : Colors.green,
   'unresponsive' : Colors.red,
   'out of stock' : Colors.orange,
-  'invalid'      : Colors.black,
+  'invalid'      : Colors.blue,
+  'report'       : primaryColor,
   'unknown'      : Colors.grey,
 };
 
@@ -32,6 +33,7 @@ Map<String, IconData> feedbackIconData = {
   'unresponsive' : Icons.phone_missed_rounded,
   'out of stock' : Icons.remove_shopping_cart_rounded,
   'invalid'      : Icons.block_rounded,
+  'report'       : Icons.flag_rounded,
   'unknown'      : Icons.device_unknown_rounded,
 };
 

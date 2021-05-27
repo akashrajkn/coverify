@@ -5,20 +5,9 @@ import 'package:contacts_service/contacts_service.dart';
 
 import 'package:coverify/models/resource.dart';
 import 'package:coverify/models/location.dart';
-import 'package:coverify/theme.dart';
-import 'package:coverify/utils/api.dart';
-import 'package:coverify/widgets/feedback_sheet.dart';
-import 'package:coverify/widgets/location_sheet.dart';
-import 'package:coverify/widgets/name_sheet.dart';
-import 'package:coverify/widgets/resource_sheet.dart';
 
 
 class PhonebookPage extends StatefulWidget {
-
-  final List<LocationModel> locations;
-  final List<ResourceModel> resources;
-  final Map<String, String> info;
-  PhonebookPage({this.locations, this.resources, this.info});
 
   @override
   _PhonebookPageState createState() => _PhonebookPageState();
@@ -33,9 +22,8 @@ class _PhonebookPageState extends State<PhonebookPage> {
 
   @override
   void initState() {
-    if (widget.locations.length > 0 && widget.resources.length > 0) {
-      readyToDisplay = true;
-    }
+    readyToDisplay = true;
+
     getPhonebookPermission()
     .then((value) {
       hasPhonebookPermission = value;
