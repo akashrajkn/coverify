@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-void showNameBottomSheet(BuildContext context, Function callback) {
+void showNameBottomSheet(BuildContext context, String displayName, Function callback) {
 
   showModalBottomSheet<dynamic>(
     isDismissible      : false,
-    // isScrollControlled : true,
+    isScrollControlled : true,
     context            : context,
     builder            : (context) {
-      String enteredName = '';
+      String enteredName = displayName;
 
       return Wrap(
         children: <Widget>[
@@ -37,6 +37,7 @@ void showNameBottomSheet(BuildContext context, Function callback) {
                   TextField(
                     autofocus       : true,
                     decoration      : InputDecoration(hintText : 'Name ...',),
+                    controller      : TextEditingController(text: displayName),
                     style           : TextStyle( fontSize : 18,),
                     onChanged       : (text) { enteredName = text; },
                     textInputAction : TextInputAction.done,
