@@ -164,13 +164,6 @@ class _BrowsePageTabState extends State<BrowsePageTab> {
   @override
   Widget build(BuildContext context) {
 
-    // if (currentLocation.name != widget.location.name) {
-    //   refreshContacts();
-    // }
-
-    print(currentLocation.name);
-    print(widget.location.name);
-
     return Column(
       mainAxisAlignment : MainAxisAlignment.start,
 

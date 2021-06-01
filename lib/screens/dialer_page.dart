@@ -1,18 +1,18 @@
-import 'package:coverify/models/location.dart';
-import 'package:coverify/screens/phonebook_page.dart';
-import 'package:coverify/utils/api.dart';
-import 'package:coverify/utils/misc.dart';
-import 'package:coverify/widgets/location_sheet.dart';
-import 'package:coverify/widgets/name_sheet.dart';
 import 'package:flutter/material.dart';
 
 import 'package:coverify/models/resource.dart';
+import 'package:coverify/models/location.dart';
+import 'package:coverify/screens/phonebook_page.dart';
 import 'package:coverify/theme.dart';
+import 'package:coverify/utils/api.dart';
 import 'package:coverify/utils/call_helper.dart';
 import 'package:coverify/utils/pretty.dart';
+import 'package:coverify/utils/misc.dart';
 import 'package:coverify/widgets/dial_button.dart';
 import 'package:coverify/widgets/feedback_sheet.dart';
+import 'package:coverify/widgets/location_sheet.dart';
 import 'package:coverify/widgets/resource_sheet.dart';
+import 'package:coverify/widgets/name_sheet.dart';
 
 
 class Dialer extends StatefulWidget {
@@ -50,7 +50,6 @@ class _DialerState extends State<Dialer> {
       }
     });
 
-
     super.initState();
   }
 
@@ -77,7 +76,7 @@ class _DialerState extends State<Dialer> {
           showLocationBottomSheet(diallerContext, widget.locations, (location) {
             print(location.id);
 
-            showNameBottomSheet(diallerContext, (contactName) {
+            showNameBottomSheet(diallerContext, '', (contactName) {
               print(contactName);
               ScaffoldMessenger.of(diallerContext).showSnackBar(snackBar)
               .closed
@@ -144,8 +143,6 @@ class _DialerState extends State<Dialer> {
   @override
   Widget build(BuildContext context) {
 
-    // print(widget.tabController.index);
-
     return TabBarView(
       controller : widget.tabController,
       children   : [
@@ -208,7 +205,7 @@ class _DialerState extends State<Dialer> {
             ),
           ),
         ),
-        PhonebookPage(),
+        PhonebookPage(locations: widget.locations, resources: widget.resources, info: widget.info),
       ]
     );
   }

@@ -162,6 +162,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     if (browsePageKey.currentState != null) {
       browsePageKey.currentState.locationUpdated(newLocation);
     }
+
+    Navigator.of(context).popAndPushNamed(homeRoute);
   }
   
   Future<void> moreInfoBottomSheet() async {

@@ -66,7 +66,6 @@ class BrowsePageState extends State<BrowsePage> {
       controller : widget.tabController,
       children   : List<Widget>.generate(widget.resources.length, (index) {
 
-        print(currentLocation.name);
         return BrowsePageTab(
           location           : currentLocation,
           resources          : widget.resources,
