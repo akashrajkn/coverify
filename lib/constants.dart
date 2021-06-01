@@ -9,7 +9,7 @@ const String withoutNameLogoPath = 'assets/images/logo.png';
 
 
 // Production urls
-const String apiBaseURL             = 'https://dev.api.coverify.in';
+const String apiBaseURL             = 'https://api.coverify.in';
 const String apiBootstrapURL        = apiBaseURL + '/v1/api/contact/bootstrap';
 const String apiFilterContactsURL   = apiBaseURL + '/v1/api/contact';
 const String apiContactStatusURL    = apiBaseURL + '/v1/api/contact/status';
