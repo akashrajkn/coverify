@@ -3,7 +3,7 @@ description: Search verified numbers
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 0.1.3+4
+version: 0.1.5+4
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -18,7 +18,7 @@ dependencies:
   flutter_phone_direct_caller: ^2.0.0
   phonecallstate: ^1.0.1
   lazy_load_scrollview: ^1.3.0
-  shared_preferences: ^2.0.5
+  shared_preferences: ^2.0.6
   sqflite: ^2.0.0+3
   http: ^0.13.3
   imei_plugin: ^1.2.0

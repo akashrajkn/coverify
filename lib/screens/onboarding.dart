@@ -1,7 +1,10 @@
-import 'package:coverify/constants.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import 'package:coverify/constants.dart';
 
 
 class OnBoardingScreen extends StatefulWidget {
@@ -11,6 +14,21 @@ class OnBoardingScreen extends StatefulWidget {
 }
 
 class _OnBoardingScreenState extends State<OnBoardingScreen> {
+
+  SharedPreferences prefs;
+
+  @override
+  void initState() {
+
+    initSharedPrefs();
+    super.initState();
+  }
+
+  Future<void> initSharedPrefs() async {
+
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    setState(() { prefs = _prefs; });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -123,7 +141,10 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                       side            : BorderSide(color: Colors.green, width: 0.5),
                       padding         : EdgeInsets.fromLTRB(15, 0, 15, 0),
                     ),
-                    onPressed : () { },
+                    onPressed : () async {
+                      await prefs.setBool('agreed_terms', true);
+                      Navigator.of(context).pushReplacementNamed(homeRoute);
+                    },
                     child     : Text('Agree and get started', style: TextStyle(fontSize: 19),),
                   ),
                 ),
